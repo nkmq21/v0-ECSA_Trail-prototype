@@ -1,0 +1,25 @@
+{
+  "name": "ECSATrail — AI Travel Planner Vietnam",
+  "short_name": "ECSATrail",
+  "description": "AI-driven travel planner for Vietnam",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8F9FA",
+  "theme_color": "#228BE6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["travel", "navigation", "productivity"]
+}
