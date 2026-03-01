@@ -23,6 +23,14 @@ export const TRANSLATIONS = {
     viewChat: 'AI Chat',
     viewTimeline: 'Timeline',
     mapHint: 'Click map markers to select landmarks',
+    addToTimeline: 'Add to Timeline',
+    removeFromTimeline: 'Remove',
+    sendToChat: 'Ask AI about this',
+    addedToTimeline: 'Added to timeline',
+    aiReconfiguring: 'AI is reconfiguring your timeline...',
+    setAsActive: 'Set as Active',
+    currentlyActive: 'Currently Active',
+    locationContext: 'Location context',
 
     // Landmark Checklist
     checklistTitle: 'Landmark Checklist',
@@ -130,6 +138,14 @@ export const TRANSLATIONS = {
     viewChat: 'Trò chuyện AI',
     viewTimeline: 'Lịch trình',
     mapHint: 'Nhấp vào điểm đánh dấu để chọn địa danh',
+    addToTimeline: 'Thêm vào lịch trình',
+    removeFromTimeline: 'Xóa',
+    sendToChat: 'Hỏi AI về địa điểm này',
+    addedToTimeline: 'Đã thêm vào lịch trình',
+    aiReconfiguring: 'AI đang cấu hình lại lịch trình...',
+    setAsActive: 'Đặt làm chính',
+    currentlyActive: 'Đang sử dụng',
+    locationContext: 'Ngữ cảnh địa điểm',
 
     // Landmark Checklist
     checklistTitle: 'Danh sách địa danh',
@@ -174,7 +190,7 @@ export const TRANSLATIONS = {
     planBNowActive: 'Kế hoạch B hiện là lịch trình chính',
     planBNowActiveDesc: 'Bạn vẫn có thể chuyển về Kế hoạch A bất kỳ lúc nào.',
     planBLocationAlert: 'Địa điểm đã thay đổi',
-    planBLocationAlertDesc: 'Điểm dừng này đã được cập nhật từ Kế hoạch A gốc.',
+    planBLocationAlertDesc: 'Điểm dừng này đã được cập nh���t từ Kế hoạch A gốc.',
     planAOriginalLabel: 'Kế hoạch gốc',
     planBReplacedLabel: 'Thay thế bởi Kế hoạch B',
     planBTabA: 'Kế hoạch A',

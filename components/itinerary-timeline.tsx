@@ -350,54 +350,93 @@ function StopCard({
 function PlanTabBar({
   activeView,
   onSwitch,
+  activePlan,
+  onSetActive,
   planBAccepted,
   hasPlanB,
 }: {
   activeView: 'a' | 'b'
   onSwitch: (v: 'a' | 'b') => void
+  activePlan: 'a' | 'b'
+  onSetActive: (v: 'a' | 'b') => void
   planBAccepted: boolean
   hasPlanB: boolean
 }) {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   if (!hasPlanB) return null
 
   return (
-    <div className="flex items-center gap-1 p-1 bg-muted rounded-xl">
-      {(['a', 'b'] as const).map((plan) => {
-        const isActive = activeView === plan
-        const label = plan === 'a' ? t('planBTabA') : t('planBTabB')
-        const isAccepted = plan === 'b' && planBAccepted
-        return (
-          <motion.button
-            key={plan}
-            onClick={() => onSwitch(plan)}
-            className={cn(
-              'relative flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
-              isActive
-                ? 'text-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
+    <div className="space-y-2">
+      {/* Tabs */}
+      <div className="flex items-center gap-1 p-1 bg-muted rounded-xl">
+        {(['a', 'b'] as const).map((plan) => {
+          const isViewing = activeView === plan
+          const isActivePlan = activePlan === plan
+          const label = plan === 'a' ? t('planBTabA') : t('planBTabB')
+          return (
+            <motion.button
+              key={plan}
+              onClick={() => onSwitch(plan)}
+              className={cn(
+                'relative flex-1 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors',
+                isViewing
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {isViewing && (
+                <motion.div
+                  layoutId="plan-tab-indicator"
+                  className={cn(
+                    'absolute inset-0 rounded-lg shadow-sm',
+                    plan === 'b' ? 'bg-primary/10 border border-primary/20' : 'bg-card border border-border'
+                  )}
+                  transition={{ type: 'spring', stiffness: 400, damping: 32 }}
+                />
+              )}
+              <span className="relative z-10">{label}</span>
+              {isActivePlan && (
+                <span className="relative z-10 flex items-center gap-0.5 bg-green-500 text-white rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none">
+                  <CheckCircle2 className="w-2.5 h-2.5" />
+                  {language === 'vi' ? 'Chính' : 'Active'}
+                </span>
+              )}
+            </motion.button>
+          )
+        })}
+      </div>
+
+      {/* Set as Active button row */}
+      <div className="flex items-center justify-between gap-2 px-1">
+        <span className="text-xs text-muted-foreground">
+          {activePlan === 'a' 
+            ? (language === 'vi' ? 'Kế hoạch A đang sử dụng' : 'Plan A is active')
+            : (language === 'vi' ? 'Kế hoạch B đang sử dụng' : 'Plan B is active')}
+        </span>
+        {activeView !== activePlan && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
           >
-            {isActive && (
-              <motion.div
-                layoutId="plan-tab-indicator"
-                className={cn(
-                  'absolute inset-0 rounded-lg shadow-sm',
-                  plan === 'b' ? 'bg-primary/10 border border-primary/20' : 'bg-card border border-border'
-                )}
-                transition={{ type: 'spring', stiffness: 400, damping: 32 }}
-              />
-            )}
-            <span className="relative z-10">{label}</span>
-            {isAccepted && (
-              <span className="relative z-10 flex items-center gap-0.5 bg-primary text-primary-foreground rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none">
-                <CheckCircle2 className="w-2.5 h-2.5" />
-                {t('planBActiveBadge').split(' ')[0]}
-              </span>
-            )}
-          </motion.button>
-        )
-      })}
+            <Button
+              size="sm"
+              variant={activeView === 'b' ? 'default' : 'outline'}
+              onClick={() => onSetActive(activeView)}
+              className="h-7 text-xs px-3 rounded-lg gap-1.5"
+            >
+              <CheckCircle2 className="w-3 h-3" />
+              {t('setAsActive')}
+            </Button>
+          </motion.div>
+        )}
+        {activeView === activePlan && (
+          <span className="text-xs font-medium text-green-600 dark:text-green-400 flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
+            {t('currentlyActive')}
+          </span>
+        )}
+      </div>
     </div>
   )
 }
@@ -545,6 +584,7 @@ export function ItineraryTimeline({ stops, weatherAlert }: ItineraryTimelineProp
   const [planBAccepted, setPlanBAccepted] = useState(false)
   const [showAcceptCard, setShowAcceptCard] = useState(false)
   const [activeView, setActiveView] = useState<'a' | 'b'>('a')
+  const [activePlan, setActivePlan] = useState<'a' | 'b'>('a') // which plan is the "active" schedule
 
   // Build Plan B stops: substitute affected stops with indoor alternatives
   const planBStops: Stop[] = stops.map(stop => {
@@ -587,6 +627,14 @@ export function ItineraryTimeline({ stops, weatherAlert }: ItineraryTimelineProp
     setPlanBAccepted(true)
     setShowAcceptCard(false)
     setActiveView('b')
+    setActivePlan('b') // Set Plan B as the active schedule
+  }
+
+  function handleSetActive(plan: 'a' | 'b') {
+    setActivePlan(plan)
+    if (plan === 'b' && !planBAccepted) {
+      setPlanBAccepted(true)
+    }
   }
 
   function handleSwitchView(v: 'a' | 'b') {
@@ -641,9 +689,11 @@ export function ItineraryTimeline({ stops, weatherAlert }: ItineraryTimelineProp
 
         {/* Plan A / B tab switcher */}
         {hasPlanB && (
-          <PlanTabBar
+<PlanTabBar
             activeView={activeView}
             onSwitch={handleSwitchView}
+            activePlan={activePlan}
+            onSetActive={handleSetActive}
             planBAccepted={planBAccepted}
             hasPlanB={hasPlanB}
           />

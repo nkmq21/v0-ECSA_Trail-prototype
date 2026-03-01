@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
 import { MapView } from '@/components/map-view'
@@ -9,7 +9,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { ItineraryTimeline } from '@/components/itinerary-timeline'
 import type { Landmark } from '@/lib/types'
 import { VIETNAM_LANDMARKS } from '@/lib/mock-data'
-import { Map, MessageSquare, List } from 'lucide-react'
+import { Map, MessageSquare, List, Sparkles, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/components/language-context'
 
@@ -35,10 +35,13 @@ const DEMO_STOPS = [
 ]
 
 export function PlannerLayout() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [selectedLandmarks, setSelectedLandmarks] = useState<Landmark[]>([])
   const [focusedId, setFocusedId] = useState<string | undefined>()
   const [rightView, setRightView] = useState<PlannerView>('checklist')
+  const [locationContext, setLocationContext] = useState<Landmark | null>(null)
+  const [isReconfiguring, setIsReconfiguring] = useState(false)
+  const [timelineStops, setTimelineStops] = useState(DEMO_STOPS)
 
   function handleToggleLandmark(landmark: Landmark) {
     setSelectedLandmarks(prev =>
@@ -47,6 +50,50 @@ export function PlannerLayout() {
         : [...prev, landmark]
     )
   }
+
+  // Add landmark to timeline with AI reconfiguration simulation
+  const handleAddToTimeline = useCallback((landmark: Landmark) => {
+    // Check if already in timeline
+    if (timelineStops.some(s => s.landmark.id === landmark.id)) return
+
+    // Show reconfiguring state
+    setIsReconfiguring(true)
+    setRightView('timeline')
+
+    // Simulate AI reconfiguration (would call real API in production)
+    setTimeout(() => {
+      setTimelineStops(prev => {
+        // Calculate new order and insert at optimal position
+        const newStop = {
+          landmark,
+          order: prev.length + 1,
+          travelTime: Math.floor(Math.random() * 120) + 30, // Random 30-150 min
+          transportMode: (['walk', 'taxi', 'motorbike', 'bus'] as const)[Math.floor(Math.random() * 4)],
+          notes: `AI-optimized stop. ${landmark.sourceVerified ? 'Source verified location with high credibility.' : 'Added based on your selection.'}`,
+        }
+        
+        // Recalculate orders
+        const updated = [...prev, newStop].map((stop, i) => ({
+          ...stop,
+          order: i + 1,
+        }))
+        
+        return updated
+      })
+      setIsReconfiguring(false)
+    }, 1500)
+  }, [timelineStops])
+
+  // Send landmark to chat as context
+  const handleSendToChat = useCallback((landmark: Landmark) => {
+    setLocationContext(landmark)
+    setRightView('chat')
+  }, [])
+
+  // Clear location context
+  const handleClearLocationContext = useCallback(() => {
+    setLocationContext(null)
+  }, [])
 
   const RIGHT_VIEWS: { id: PlannerView; label: string; icon: React.ElementType }[] = [
     { id: 'checklist', label: t('viewChecklist'), icon: List },
@@ -74,9 +121,27 @@ export function PlannerLayout() {
             <span className="hidden sm:block">{label}</span>
           </button>
         ))}
-        <div className="ml-auto text-xs text-muted-foreground hidden md:block">
-          {t('mapHint')}
-        </div>
+
+        {/* Reconfiguring indicator */}
+        <AnimatePresence>
+          {isReconfiguring && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="ml-auto flex items-center gap-1.5 bg-primary/10 text-primary rounded-full px-3 py-1 text-xs font-medium"
+            >
+              <Loader2 className="w-3 h-3 animate-spin" />
+              {t('aiReconfiguring')}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!isReconfiguring && (
+          <div className="ml-auto text-xs text-muted-foreground hidden md:block">
+            {t('mapHint')}
+          </div>
+        )}
       </div>
 
       {/* Split layout */}
@@ -88,6 +153,8 @@ export function PlannerLayout() {
               <MapView
                 selectedLandmarks={selectedLandmarks}
                 onToggleLandmark={handleToggleLandmark}
+                onAddToTimeline={handleAddToTimeline}
+                onSendToChat={handleSendToChat}
                 focusedLandmarkId={focusedId}
               />
             </div>
@@ -118,15 +185,19 @@ export function PlannerLayout() {
                   {rightView === 'chat' && (
                     <ChatPanel
                       selectedLandmarks={selectedLandmarks}
+                      locationContext={locationContext}
+                      onClearLocationContext={handleClearLocationContext}
                     />
                   )}
                   {rightView === 'timeline' && (
                     <ItineraryTimeline
-                      stops={DEMO_STOPS}
+                      stops={timelineStops}
                       weatherAlert={{
                         type: 'rain',
                         severity: 'medium',
-                        message: 'Rain expected at Tam Coc this afternoon. Consider moving the boat tour to morning.',
+                        message: language === 'vi' 
+                          ? 'Dự báo mưa tại Tam Cốc chiều nay. Cân nhắc chuyển chuyến thuyền sang buổi sáng.'
+                          : 'Rain expected at Tam Coc this afternoon. Consider moving the boat tour to morning.',
                         affectedStops: [VIETNAM_LANDMARKS[7].id],
                         planBGenerated: true,
                       }}
