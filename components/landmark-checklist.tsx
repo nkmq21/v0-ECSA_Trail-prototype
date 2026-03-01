@@ -1,12 +1,13 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
-import { CheckCircle2, Circle, MapPin, Star, ShieldCheck, Clock, CloudRain, Sun } from 'lucide-react'
+import { CheckCircle2, Circle, MapPin, ShieldCheck, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import type { Landmark } from '@/lib/types'
 import { VIETNAM_LANDMARKS } from '@/lib/mock-data'
+import { useLanguage } from '@/components/language-context'
 
 interface LandmarkChecklistProps {
   selected: Landmark[]
@@ -43,16 +44,17 @@ function CredibilityBar({ score }: { score: number }) {
 }
 
 export function LandmarkChecklist({ selected, onToggle, onFocus, focusedId }: LandmarkChecklistProps) {
+  const { t, language } = useLanguage()
   const isSelected = (id: string) => selected.some(l => l.id === id)
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="px-4 pt-4 pb-3 border-b border-border">
+    <div className="flex flex-col h-full min-h-0">
+      {/* Header — fixed height, never shrinks */}
+      <div className="flex-none px-4 pt-4 pb-3 border-b border-border">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-semibold text-sm text-foreground">Landmark Checklist</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Click to add to your itinerary</p>
+            <h2 className="font-semibold text-sm text-foreground">{t('checklistTitle')}</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">{t('checklistSubtitle')}</p>
           </div>
           <AnimatePresence>
             {selected.length > 0 && (
@@ -70,12 +72,13 @@ export function LandmarkChecklist({ selected, onToggle, onFocus, focusedId }: La
         </div>
       </div>
 
-      {/* List */}
-      <ScrollArea className="flex-1">
+      {/* Scrollable list — takes all remaining height */}
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-2 space-y-1">
           {VIETNAM_LANDMARKS.map((landmark, index) => {
             const checked = isSelected(landmark.id)
             const focused = focusedId === landmark.id
+            const displayName = language === 'vi' ? landmark.name : landmark.nameEn
 
             return (
               <motion.div
@@ -87,6 +90,8 @@ export function LandmarkChecklist({ selected, onToggle, onFocus, focusedId }: La
                 <button
                   onClick={() => onToggle(landmark)}
                   onMouseEnter={() => onFocus(landmark.id)}
+                  aria-pressed={checked}
+                  aria-label={`${checked ? 'Remove' : 'Add'} ${landmark.nameEn}`}
                   className={cn(
                     'w-full text-left rounded-xl p-3 transition-all duration-200 group border',
                     checked
@@ -111,11 +116,7 @@ export function LandmarkChecklist({ selected, onToggle, onFocus, focusedId }: La
                             <CheckCircle2 className="w-5 h-5 text-primary fill-primary/20" />
                           </motion.div>
                         ) : (
-                          <motion.div
-                            key="unchecked"
-                            initial={{ scale: 0.5 }}
-                            animate={{ scale: 1 }}
-                          >
+                          <motion.div key="unchecked" initial={{ scale: 0.5 }} animate={{ scale: 1 }}>
                             <Circle className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                           </motion.div>
                         )}
@@ -130,39 +131,44 @@ export function LandmarkChecklist({ selected, onToggle, onFocus, focusedId }: La
                             'text-sm font-semibold leading-tight truncate',
                             checked ? 'text-primary' : 'text-foreground'
                           )}>
-                            {landmark.nameEn}
+                            {displayName}
                           </p>
-                          <p className="text-xs text-muted-foreground mt-0.5">{landmark.name}</p>
+                          {/* Always show the other language as subtitle */}
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            {language === 'vi' ? landmark.nameEn : landmark.name}
+                          </p>
                         </div>
-                        <div className="flex-shrink-0 flex items-center gap-1">
-                          <span className="text-base leading-none">{CATEGORY_ICONS[landmark.category] ?? '📍'}</span>
+                        <div className="flex-shrink-0">
+                          <span className="text-base leading-none" aria-hidden="true">
+                            {CATEGORY_ICONS[landmark.category] ?? '📍'}
+                          </span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 mt-1.5">
                         <MapPin className="w-3 h-3 text-muted-foreground flex-shrink-0" />
                         <span className="text-xs text-muted-foreground truncate">{landmark.province}</span>
-                        {landmark.indoor ? (
-                          <Badge variant="secondary" className="text-xs py-0 px-1.5 h-4">Indoor</Badge>
-                        ) : null}
+                        {landmark.indoor && (
+                          <Badge variant="secondary" className="text-xs py-0 px-1.5 h-4">
+                            {t('indoor')}
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="mt-2 space-y-1">
                         <CredibilityBar score={landmark.credibilityScore} />
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           {landmark.sourceVerified && (
                             <div className="flex items-center gap-1 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400 rounded px-1.5 py-0.5">
                               <ShieldCheck className="w-3 h-3" />
-                              <span className="text-xs font-medium">Source Verified</span>
+                              <span className="text-xs font-medium">{t('sourceVerified')}</span>
                             </div>
                           )}
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <Clock className="w-3 h-3" />
                             <span className="text-xs">{landmark.duration}h</span>
                           </div>
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <span className="text-xs">{landmark.sources} sources</span>
-                          </div>
+                          <span className="text-xs text-muted-foreground">{landmark.sources} sources</span>
                         </div>
                       </div>
                     </div>

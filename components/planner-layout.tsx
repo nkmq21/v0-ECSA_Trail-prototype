@@ -11,6 +11,7 @@ import type { Landmark } from '@/lib/types'
 import { VIETNAM_LANDMARKS } from '@/lib/mock-data'
 import { Map, MessageSquare, List } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/components/language-context'
 
 type PlannerView = 'checklist' | 'chat' | 'timeline'
 
@@ -34,6 +35,7 @@ const DEMO_STOPS = [
 ]
 
 export function PlannerLayout() {
+  const { t } = useLanguage()
   const [selectedLandmarks, setSelectedLandmarks] = useState<Landmark[]>([])
   const [focusedId, setFocusedId] = useState<string | undefined>()
   const [rightView, setRightView] = useState<PlannerView>('checklist')
@@ -47,16 +49,16 @@ export function PlannerLayout() {
   }
 
   const RIGHT_VIEWS: { id: PlannerView; label: string; icon: React.ElementType }[] = [
-    { id: 'checklist', label: 'Checklist', icon: List },
-    { id: 'chat', label: 'AI Chat', icon: MessageSquare },
-    { id: 'timeline', label: 'Timeline', icon: Map },
+    { id: 'checklist', label: t('viewChecklist'), icon: List },
+    { id: 'chat', label: t('viewChat'), icon: MessageSquare },
+    { id: 'timeline', label: t('viewTimeline'), icon: Map },
   ]
 
   return (
     <div className="flex flex-col h-full">
       {/* Right panel view switcher */}
       <div className="flex items-center gap-1 px-4 py-2 border-b border-border bg-card/50 backdrop-blur-sm">
-        <span className="text-xs font-semibold text-muted-foreground mr-2 hidden sm:block">View:</span>
+        <span className="text-xs font-semibold text-muted-foreground mr-2 hidden sm:block">{t('viewLabel')}</span>
         {RIGHT_VIEWS.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -73,7 +75,7 @@ export function PlannerLayout() {
           </button>
         ))}
         <div className="ml-auto text-xs text-muted-foreground hidden md:block">
-          Click map markers to select landmarks
+          {t('mapHint')}
         </div>
       </div>
 
