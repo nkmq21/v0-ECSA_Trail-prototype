@@ -185,9 +185,9 @@ function PlanDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col p-0 gap-0">
-        <DialogHeader className="flex-none p-6 pb-4 border-b border-border">
-          <div className="flex items-start gap-4 pr-8">
+      <DialogContent showCloseButton={false} className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col p-0 gap-0">
+        <DialogHeader className="relative flex-none p-6 pb-4 border-b border-border">
+          <div className="flex items-start gap-4 pr-10">
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <Badge variant="outline" className="text-[10px]">{plan.category}</Badge>
@@ -203,6 +203,16 @@ function PlanDetailModal({
               </DialogDescription>
             </div>
           </div>
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </DialogClose>
         </DialogHeader>
 
         <ScrollArea className="flex-1 min-h-0">

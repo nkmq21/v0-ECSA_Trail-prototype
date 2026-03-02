@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Zap, Crown, ShoppingCart, ArrowRight } from 'lucide-react'
+import { Check, Zap, Crown, ShoppingCart, ArrowRight, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogClose, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/components/language-context'
@@ -40,15 +40,25 @@ export function AiServiceModal({ open, plan, onComplete, onClose }: AiServiceMod
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col gap-0 p-0">
-        <DialogHeader className="flex-none p-6 pb-4 border-b border-border">
-          <div className="pr-8">
+      <DialogContent showCloseButton={false} className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col gap-0 p-0">
+        <DialogHeader className="relative flex-none p-6 pb-4 border-b border-border">
+          <div className="pr-10">
             <DialogTitle className="text-lg font-bold">{t('aiServiceTitle')}</DialogTitle>
             <DialogDescription className="mt-1 text-sm">
               {planTitle && <><span className="font-medium text-foreground">{planTitle}</span> · </>}
               {t('aiServiceDesc')}
             </DialogDescription>
           </div>
+          <DialogClose asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted"
+              aria-label="Close"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </DialogClose>
         </DialogHeader>
 
         <AnimatePresence mode="wait">
