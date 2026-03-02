@@ -1,13 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Map, BarChart3, CloudLightning, ShoppingBag, Pencil, Globe, Wifi } from 'lucide-react'
+import { Map, BarChart3, ShoppingBag, Pencil, Globe, Wifi } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ECSATrailLogo } from '@/components/ecsa-logo'
 import { useLanguage } from '@/components/language-context'
 import { Button } from '@/components/ui/button'
 
-export type AppTab = 'planner' | 'marketplace' | 'creator' | 'dashboard' | 'weather'
+export type AppTab = 'planner' | 'marketplace' | 'creator' | 'dashboard'
 
 interface NavBarProps {
   activeTab: AppTab
@@ -22,7 +22,6 @@ export function NavBar({ activeTab, onTabChange }: NavBarProps) {
     { id: 'marketplace', label: t('navMarketplace'), icon: ShoppingBag, highlight: true },
     { id: 'creator', label: t('navCreator'), icon: Pencil },
     { id: 'dashboard', label: t('navDashboard'), icon: BarChart3 },
-    { id: 'weather', label: t('navWeather'), icon: CloudLightning },
   ]
 
   return (

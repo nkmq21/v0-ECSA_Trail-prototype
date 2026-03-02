@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { NavBar, type AppTab } from '@/components/nav-bar'
 import { PlannerLayout } from '@/components/planner-layout'
 import { FrequencyDashboard } from '@/components/frequency-dashboard'
-import { WeatherSimulation } from '@/components/weather-simulation'
 import { Marketplace } from '@/components/marketplace'
 import { CreatorStudio } from '@/components/creator-studio'
 import { LanguageProvider } from '@/components/language-context'
+import type { TravelPlan } from '@/lib/types'
 
 const PAGE_VARIANTS = {
   initial: { opacity: 0, y: 10 },
@@ -18,6 +18,17 @@ const PAGE_VARIANTS = {
 
 export default function ECSATrailApp() {
   const [activeTab, setActiveTab] = useState<AppTab>('marketplace')
+  const [activePlan, setActivePlan] = useState<TravelPlan | null>(null)
+
+  function handleOpenInPlanner(plan: TravelPlan) {
+    setActivePlan(plan)
+    setActiveTab('planner')
+  }
+
+  function handleClearActivePlan() {
+    setActivePlan(null)
+    setActiveTab('marketplace')
+  }
 
   return (
     <LanguageProvider>
@@ -37,7 +48,7 @@ export default function ECSATrailApp() {
                 transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="h-full overflow-auto"
               >
-                <Marketplace />
+                <Marketplace onOpenInPlanner={handleOpenInPlanner} />
               </motion.div>
             )}
 
@@ -65,7 +76,10 @@ export default function ECSATrailApp() {
                 transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="h-full"
               >
-                <PlannerLayout />
+                <PlannerLayout
+                  activePlan={activePlan}
+                  onClearActivePlan={handleClearActivePlan}
+                />
               </motion.div>
             )}
 
@@ -81,22 +95,6 @@ export default function ECSATrailApp() {
               >
                 <div className="max-w-5xl mx-auto">
                   <FrequencyDashboard />
-                </div>
-              </motion.div>
-            )}
-
-            {activeTab === 'weather' && (
-              <motion.div
-                key="weather"
-                variants={PAGE_VARIANTS}
-                initial="initial"
-                animate="animate"
-                exit="exit"
-                transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="h-full overflow-auto"
-              >
-                <div className="max-w-2xl mx-auto">
-                  <WeatherSimulation />
                 </div>
               </motion.div>
             )}

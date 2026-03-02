@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { VIETNAM_LANDMARKS } from '@/lib/mock-data'
 import { useLanguage } from '@/components/language-context'
-import type { Landmark } from '@/lib/types'
+import type { Landmark, TravelPlan } from '@/lib/types'
 
 type SimulationState = 'idle' | 'polling' | 'alert_detected' | 'generating_plan_b' | 'plan_b_ready' | 'plan_b_accepted'
 
@@ -101,7 +101,7 @@ function WeatherCard({ temp, condition, humidity, wind }: {
   )
 }
 
-export function WeatherSimulation() {
+export function WeatherSimulation({ activePlan }: { activePlan?: TravelPlan | null }) {
   const { t, language } = useLanguage()
   const [state, setState] = useState<SimulationState>('idle')
   const [currentStep, setCurrentStep] = useState(-1)
@@ -148,8 +148,12 @@ export function WeatherSimulation() {
             <Zap className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="font-semibold text-foreground">{t('weatherTitle')}</h2>
-            <p className="text-sm text-muted-foreground mt-0.5">{t('weatherSubtitle')}</p>
+              <h2 className="font-semibold text-foreground">{t('weatherTitle')}</h2>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                {activePlan
+                  ? (language === 'vi' ? activePlan.titleVi : activePlan.title)
+                  : t('weatherSubtitle')}
+              </p>
           </div>
         </div>
       </div>

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Star, ShoppingCart, CheckCircle, MapPin, Clock, Users, Zap,
   TrendingUp, Shield, ChevronRight, X, BadgeCheck, AlertCircle, Building2,
-  SlidersHorizontal, ArrowUpDown, Package
+  SlidersHorizontal, ArrowUpDown, Package, ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -171,12 +171,14 @@ function PlanDetailModal({
   onClose,
   owned,
   onBuy,
+  onOpenInPlanner,
 }: {
   plan: TravelPlan | null
   open: boolean
   onClose: () => void
   owned: boolean
   onBuy: (plan: TravelPlan) => void
+  onOpenInPlanner: (plan: TravelPlan) => void
 }) {
   const { t, language } = useLanguage()
   if (!plan) return null
@@ -217,24 +219,36 @@ function PlanDetailModal({
 
         <ScrollArea className="flex-1 min-h-0">
           <div className="p-6 space-y-6">
-            {/* Price + Buy */}
-            <div className="flex items-center justify-between bg-muted/50 rounded-xl p-4 border border-border">
-              <div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-foreground">${plan.price.toFixed(2)}</span>
-                  {plan.originalPrice && <span className="text-base text-muted-foreground line-through">${plan.originalPrice.toFixed(2)}</span>}
+            {/* Price + Buy + Open in Planner */}
+            <div className="flex flex-col gap-3 bg-muted/50 rounded-xl p-4 border border-border">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-3xl font-bold text-foreground">${plan.price.toFixed(2)}</span>
+                    {plan.originalPrice && <span className="text-base text-muted-foreground line-through">${plan.originalPrice.toFixed(2)}</span>}
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-0.5">One-time purchase · Unlimited use · AI editing included</p>
                 </div>
-                <p className="text-xs text-muted-foreground mt-0.5">One-time purchase · Unlimited use · AI editing included</p>
+                <Button
+                  size="lg"
+                  variant={owned ? 'outline' : 'default'}
+                  className="rounded-xl px-6 flex-shrink-0"
+                  onClick={() => { if (!owned) onBuy(plan) }}
+                  disabled={owned}
+                >
+                  {owned ? <><CheckCircle className="w-4 h-4 mr-2" />{t('planOwned')}</> : <><ShoppingCart className="w-4 h-4 mr-2" />{t('buyNow')}</>}
+                </Button>
               </div>
-              <Button
-                size="lg"
-                variant={owned ? 'outline' : 'default'}
-                className="rounded-xl px-6"
-                onClick={() => { if (!owned) onBuy(plan) }}
-                disabled={owned}
-              >
-                {owned ? <><CheckCircle className="w-4 h-4 mr-2" />{t('planOwned')}</> : <><ShoppingCart className="w-4 h-4 mr-2" />{t('buyNow')}</>}
-              </Button>
+              {owned && (
+                <Button
+                  variant="default"
+                  className="w-full rounded-xl gap-2 bg-primary/90 hover:bg-primary"
+                  onClick={() => { onOpenInPlanner(plan); onClose() }}
+                >
+                  <ExternalLink className="w-4 h-4" />
+                  {language === 'vi' ? 'Mở trong AI Planner' : 'Open in AI Planner'}
+                </Button>
+              )}
             </div>
 
             {/* Stats */}
@@ -331,7 +345,11 @@ function BusinessBanner() {
   )
 }
 
-export function Marketplace() {
+interface MarketplaceProps {
+  onOpenInPlanner?: (plan: TravelPlan) => void
+}
+
+export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
   const { t, language } = useLanguage()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<CategoryFilter>('all')
@@ -523,9 +541,10 @@ export function Marketplace() {
       <PlanDetailModal
         plan={selectedPlan}
         open={detailOpen}
-        onClose={() => setDetailOpen(false)}
+        onClose={() => { setDetailOpen(false); setSelectedPlan(null) }}
         owned={selectedPlan ? ownedIds.has(selectedPlan.id) : false}
         onBuy={handleBuy}
+        onOpenInPlanner={(plan) => { onOpenInPlanner?.(plan); setDetailOpen(false) }}
       />
 
       {/* AI service modal */}
