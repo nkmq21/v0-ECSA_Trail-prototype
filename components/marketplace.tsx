@@ -219,44 +219,12 @@ function PlanDetailModal({
 
         <ScrollArea className="flex-1 min-h-0">
           <div className="p-6 space-y-6">
-            {/* Price + Buy + Open in Planner */}
-            <div className="flex flex-col gap-3 bg-muted/50 rounded-xl p-4 border border-border">
-              <div className="flex items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-3xl font-bold text-foreground">${plan.price.toFixed(2)}</span>
-                    {plan.originalPrice && <span className="text-base text-muted-foreground line-through">${plan.originalPrice.toFixed(2)}</span>}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">One-time purchase · Unlimited use · AI editing included</p>
-                </div>
-                <Button
-                  size="lg"
-                  variant={owned ? 'outline' : 'default'}
-                  className="rounded-xl px-6 flex-shrink-0"
-                  onClick={() => { if (!owned) onBuy(plan) }}
-                  disabled={owned}
-                >
-                  {owned ? <><CheckCircle className="w-4 h-4 mr-2" />{t('planOwned')}</> : <><ShoppingCart className="w-4 h-4 mr-2" />{t('buyNow')}</>}
-                </Button>
-              </div>
-              {owned && (
-                <Button
-                  variant="default"
-                  className="w-full rounded-xl gap-2 bg-primary/90 hover:bg-primary"
-                  onClick={() => { onOpenInPlanner(plan); onClose() }}
-                >
-                  <ExternalLink className="w-4 h-4" />
-                  {language === 'vi' ? 'Mở trong AI Planner' : 'Open in AI Planner'}
-                </Button>
-              )}
-            </div>
-
             {/* Stats */}
-            <div className="grid grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
                 { icon: Clock, label: t('planDays'), value: `${plan.duration}d` },
                 { icon: Users, label: t('planPurchases'), value: plan.purchaseCount },
-                { icon: MapPin, label: t('province'), value: plan.provinces.length },
+                { icon: MapPin, label: 'Provinces', value: plan.provinces.length },
                 { icon: Star, label: t('avgRating'), value: plan.rating.toFixed(1) },
               ].map(({ icon: Icon, label, value }) => (
                 <div key={label} className="bg-card border border-border rounded-lg p-3 text-center">
@@ -320,6 +288,41 @@ function PlanDetailModal({
             </div>
           </div>
         </ScrollArea>
+
+        {/* Sticky purchase footer — always visible */}
+        <div className="flex-none border-t border-border bg-card/95 backdrop-blur-sm p-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-foreground">${plan.price.toFixed(2)}</span>
+                {plan.originalPrice && <span className="text-sm text-muted-foreground line-through">${plan.originalPrice.toFixed(2)}</span>}
+              </div>
+              <p className="text-[10px] text-muted-foreground mt-0.5 leading-tight">One-time purchase · Unlimited use</p>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {owned && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl gap-1.5"
+                  onClick={() => { onOpenInPlanner(plan); onClose() }}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{language === 'vi' ? 'AI Planner' : 'Open in Planner'}</span>
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant={owned ? 'secondary' : 'default'}
+                className="rounded-xl px-5"
+                onClick={() => { if (!owned) onBuy(plan) }}
+                disabled={owned}
+              >
+                {owned ? <><CheckCircle className="w-3.5 h-3.5 mr-1.5" />{t('planOwned')}</> : <><ShoppingCart className="w-3.5 h-3.5 mr-1.5" />{t('buyNow')}</>}
+              </Button>
+            </div>
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   )
@@ -422,12 +425,12 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="border-b border-border bg-card/60 backdrop-blur-sm px-6 py-4">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
+      {/* Header — flex-none */}
+      <div className="flex-none border-b border-border bg-card/60 backdrop-blur-sm px-6 py-4">
         <div className="max-w-6xl mx-auto">
           <div className="flex items-start justify-between gap-4 mb-4">
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold text-foreground text-balance">{t('marketplaceTitle')}</h1>
               <p className="text-sm text-muted-foreground mt-0.5">{t('marketplaceSubtitle')}</p>
             </div>
@@ -456,7 +459,7 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 min-h-0 overflow-auto">
         <div className="max-w-6xl mx-auto px-6 py-5 space-y-5">
 
           {/* Business banner */}

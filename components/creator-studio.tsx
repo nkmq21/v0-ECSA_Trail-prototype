@@ -395,11 +395,11 @@ export function CreatorStudio() {
   const [editingPlan, setEditingPlan] = useState<TravelPlan | null>(null)
 
   return (
-    <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="border-b border-border bg-card/60 backdrop-blur-sm px-6 py-4">
+    <div className="flex flex-col h-full min-h-0 overflow-hidden">
+      {/* Header — flex-none so it never shrinks or scrolls */}
+      <div className="flex-none border-b border-border bg-card/60 backdrop-blur-sm px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-start justify-between gap-4">
-          <div>
+          <div className="min-w-0">
             <h1 className="text-2xl font-bold text-foreground text-balance">{t('creatorTitle')}</h1>
             <p className="text-sm text-muted-foreground mt-0.5">{t('creatorSubtitle')}</p>
           </div>
@@ -413,7 +413,8 @@ export function CreatorStudio() {
         </div>
       </div>
 
-      <ScrollArea className="flex-1">
+      {/* Scrollable body — flex-1 min-h-0 for proper overflow containment */}
+      <ScrollArea className="flex-1 min-h-0">
         <div className="max-w-4xl mx-auto px-6 py-5 space-y-5">
           {/* Earnings overview */}
           <EarningsCard />
