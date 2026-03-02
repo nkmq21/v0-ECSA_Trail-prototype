@@ -51,3 +51,85 @@ export interface FrequencyDataPoint {
   googleMapsHits: number
   blogHits: number
 }
+
+// ─── Business Model Types ──────────────────────────────────────────────────
+
+export type AiTier = 'per-plan' | 'monthly'
+
+export interface Creator {
+  id: string
+  name: string
+  avatar: string
+  bio: string
+  province: string
+  totalPlans: number
+  totalSales: number
+  rating: number
+  verified: boolean
+  joinedYear: number
+  platformCut: number // percentage ECSATrail takes (e.g. 15)
+}
+
+export interface TravelPlan {
+  id: string
+  title: string
+  titleVi: string
+  creator: Creator
+  price: number // USD
+  originalPrice?: number // for sale display
+  rating: number
+  reviewCount: number
+  purchaseCount: number
+  province: string
+  provinces: string[]
+  duration: number // days
+  difficulty: 'easy' | 'moderate' | 'challenging'
+  category: 'cultural' | 'nature' | 'food' | 'adventure' | 'beach' | 'city'
+  coverImage: string
+  highlights: string[]
+  highlightsVi: string[]
+  stops: ItineraryStop[]
+  aiVerified: boolean
+  factChecked: boolean
+  includesTransport: boolean
+  includesTips: boolean
+  includesMedia: boolean
+  createdAt: string
+  updatedAt: string
+  tags: string[]
+  shared: boolean // whether creator has premium sharing
+}
+
+export interface PurchasedPlan extends TravelPlan {
+  purchasedAt: string
+  aiTier: AiTier | null
+  customizedStops: ItineraryStop[]
+  activePlan: 'a' | 'b'
+  notes: string
+}
+
+export interface AiServiceTier {
+  id: AiTier
+  label: string
+  labelVi: string
+  price: number
+  priceLabel: string
+  memory: string
+  memoryVi: string
+  context: string
+  contextVi: string
+  features: string[]
+  featuresVi: string[]
+  recommended?: boolean
+}
+
+export interface Review {
+  id: string
+  user: string
+  avatar: string
+  rating: number
+  comment: string
+  commentVi: string
+  date: string
+  helpful: number
+}

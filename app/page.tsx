@@ -6,10 +6,18 @@ import { NavBar, type AppTab } from '@/components/nav-bar'
 import { PlannerLayout } from '@/components/planner-layout'
 import { FrequencyDashboard } from '@/components/frequency-dashboard'
 import { WeatherSimulation } from '@/components/weather-simulation'
+import { Marketplace } from '@/components/marketplace'
+import { CreatorStudio } from '@/components/creator-studio'
 import { LanguageProvider } from '@/components/language-context'
 
+const PAGE_VARIANTS = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+}
+
 export default function ECSATrailApp() {
-  const [activeTab, setActiveTab] = useState<AppTab>('planner')
+  const [activeTab, setActiveTab] = useState<AppTab>('marketplace')
 
   return (
     <LanguageProvider>
@@ -18,13 +26,43 @@ export default function ECSATrailApp() {
 
         <main className="flex-1 overflow-hidden" role="main">
           <AnimatePresence mode="wait">
+
+            {activeTab === 'marketplace' && (
+              <motion.div
+                key="marketplace"
+                variants={PAGE_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="h-full overflow-auto"
+              >
+                <Marketplace />
+              </motion.div>
+            )}
+
+            {activeTab === 'creator' && (
+              <motion.div
+                key="creator"
+                variants={PAGE_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="h-full overflow-hidden"
+              >
+                <CreatorStudio />
+              </motion.div>
+            )}
+
             {activeTab === 'planner' && (
               <motion.div
                 key="planner"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                variants={PAGE_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="h-full"
               >
                 <PlannerLayout />
@@ -34,10 +72,11 @@ export default function ECSATrailApp() {
             {activeTab === 'dashboard' && (
               <motion.div
                 key="dashboard"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                variants={PAGE_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="h-full overflow-auto"
               >
                 <div className="max-w-5xl mx-auto">
@@ -49,10 +88,11 @@ export default function ECSATrailApp() {
             {activeTab === 'weather' && (
               <motion.div
                 key="weather"
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -12 }}
-                transition={{ duration: 0.25, ease: 'easeOut' }}
+                variants={PAGE_VARIANTS}
+                initial="initial"
+                animate="animate"
+                exit="exit"
+                transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="h-full overflow-auto"
               >
                 <div className="max-w-2xl mx-auto">
@@ -60,6 +100,7 @@ export default function ECSATrailApp() {
                 </div>
               </motion.div>
             )}
+
           </AnimatePresence>
         </main>
       </div>
