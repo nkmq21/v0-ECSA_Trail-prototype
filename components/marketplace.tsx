@@ -11,7 +11,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogClose } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/components/language-context'
 import { MOCK_PLANS, MOCK_REVIEWS, AI_SERVICE_TIERS } from '@/lib/mock-data'
@@ -185,30 +185,27 @@ function PlanDetailModal({
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col p-0 gap-0">
-        <DialogHeader className="p-6 pb-4 border-b border-border">
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-1">
+      <DialogContent className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col p-0 gap-0">
+        <DialogHeader className="flex-none p-6 pb-4 border-b border-border">
+          <div className="flex items-start gap-4 pr-8">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
                 <Badge variant="outline" className="text-[10px]">{plan.category}</Badge>
                 <Badge variant="outline" className={cn('text-[10px]', DIFFICULTY_COLOR[plan.difficulty])}>{plan.difficulty}</Badge>
                 {plan.aiVerified && <Badge className="bg-primary/10 text-primary border-primary/20 text-[10px]"><Zap className="w-2.5 h-2.5 mr-1" />AI Verified</Badge>}
               </div>
               <DialogTitle className="text-xl font-bold leading-tight">{title}</DialogTitle>
-              <DialogDescription className="mt-1 flex items-center gap-3 text-xs">
+              <DialogDescription className="mt-1 flex items-center gap-3 text-xs flex-wrap">
                 <CreatorAvatar creator={plan.creator} />
                 <span>·</span>
                 <StarRating rating={plan.rating} size="md" />
                 <span className="text-muted-foreground">({plan.reviewCount} {t('planReviews')})</span>
               </DialogDescription>
             </div>
-            <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0 rounded-full flex-shrink-0">
-              <X className="w-4 h-4" />
-            </Button>
           </div>
         </DialogHeader>
 
-        <ScrollArea className="flex-1">
+        <ScrollArea className="flex-1 min-h-0">
           <div className="p-6 space-y-6">
             {/* Price + Buy */}
             <div className="flex items-center justify-between bg-muted/50 rounded-xl p-4 border border-border">

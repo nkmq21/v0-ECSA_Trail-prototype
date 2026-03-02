@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, Zap, Crown, X, ShoppingCart, ArrowRight } from 'lucide-react'
+import { Check, Zap, Crown, ShoppingCart, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
-import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { useLanguage } from '@/components/language-context'
 import { AI_SERVICE_TIERS } from '@/lib/mock-data'
 import type { TravelPlan, AiServiceTier } from '@/lib/types'
@@ -39,19 +39,14 @@ export function AiServiceModal({ open, plan, onComplete, onClose }: AiServiceMod
 
   return (
     <Dialog open={open} onOpenChange={v => !v && onClose()}>
-      <DialogContent className="max-w-2xl gap-0 p-0 overflow-hidden">
-        <DialogHeader className="p-6 pb-4 border-b border-border">
-          <div className="flex items-start justify-between">
-            <div>
-              <DialogTitle className="text-lg font-bold">{t('aiServiceTitle')}</DialogTitle>
-              <DialogDescription className="mt-1 text-sm">
-                {planTitle && <><span className="font-medium text-foreground">{planTitle}</span> · </>}
-                {t('aiServiceDesc')}
-              </DialogDescription>
-            </div>
-            <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0 rounded-full flex-shrink-0">
-              <X className="w-4 h-4" />
-            </Button>
+      <DialogContent className="max-w-2xl max-h-[90dvh] overflow-hidden flex flex-col gap-0 p-0">
+        <DialogHeader className="flex-none p-6 pb-4 border-b border-border">
+          <div className="pr-8">
+            <DialogTitle className="text-lg font-bold">{t('aiServiceTitle')}</DialogTitle>
+            <DialogDescription className="mt-1 text-sm">
+              {planTitle && <><span className="font-medium text-foreground">{planTitle}</span> · </>}
+              {t('aiServiceDesc')}
+            </DialogDescription>
           </div>
         </DialogHeader>
 
@@ -84,8 +79,10 @@ export function AiServiceModal({ open, plan, onComplete, onClose }: AiServiceMod
               key="tiers"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
+              className="flex flex-col flex-1 min-h-0 overflow-hidden"
             >
-              <div className="p-6 space-y-4">
+              <ScrollArea className="flex-1 min-h-0">
+                <div className="p-6 space-y-4">
                 {/* Skip AI option */}
                 <button
                   onClick={() => setSelected(null)}
@@ -195,10 +192,11 @@ export function AiServiceModal({ open, plan, onComplete, onClose }: AiServiceMod
                     </motion.button>
                   )
                 })}
-              </div>
+                </div>
+              </ScrollArea>
 
-              {/* Footer */}
-              <div className="border-t border-border p-5 flex items-center justify-between gap-4 bg-muted/30">
+              {/* Footer — fixed outside scroll */}
+              <div className="flex-none border-t border-border p-5 flex items-center justify-between gap-4 bg-muted/30">
                 <div>
                   <p className="text-xs text-muted-foreground">Total</p>
                   <p className="text-xl font-bold text-foreground">${totalPrice.toFixed(2)}</p>
