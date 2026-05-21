@@ -1,0 +1,349 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1779268454295,
+  "projectRoot": "/Users/duynd/WebstormProjects/v0-ECSA_Trail-prototype",
+  "techStack": {
+    "languages": [
+      {
+        "name": "JavaScript/TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "package.json"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "tsconfig.json"
+        ]
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "next",
+        "version": "16.1.6",
+        "category": "fullstack"
+      },
+      {
+        "name": "react",
+        "version": "19.2.4",
+        "category": "frontend"
+      },
+      {
+        "name": "react-dom",
+        "version": "19.2.4",
+        "category": "frontend"
+      }
+    ],
+    "packageManager": "pnpm",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": "pnpm build",
+    "testCommand": null,
+    "lintCommand": "pnpm lint",
+    "devCommand": "pnpm dev",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start",
+      "lint": "eslint ."
+    }
+  },
+  "conventions": {
+    "namingStyle": "camelCase",
+    "importStyle": "ES modules",
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": true,
+    "workspaces": [],
+    "mainDirectories": [
+      "app",
+      "components",
+      "lib",
+      "public"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "app": {
+      "path": "app",
+      "purpose": "Application code",
+      "fileCount": 3,
+      "lastAccessed": 1779268454264,
+      "keyFiles": [
+        "globals.css",
+        "layout.tsx",
+        "page.tsx"
+      ]
+    },
+    "components": {
+      "path": "components",
+      "purpose": "UI components",
+      "fileCount": 14,
+      "lastAccessed": 1779268454264,
+      "keyFiles": [
+        "ai-service-modal.tsx",
+        "chat-panel.tsx",
+        "creator-studio.tsx",
+        "ecsa-logo.tsx",
+        "frequency-dashboard.tsx"
+      ]
+    },
+    "hooks": {
+      "path": "hooks",
+      "purpose": null,
+      "fileCount": 2,
+      "lastAccessed": 1779268454274,
+      "keyFiles": [
+        "use-mobile.ts",
+        "use-toast.ts"
+      ]
+    },
+    "lib": {
+      "path": "lib",
+      "purpose": "Library code",
+      "fileCount": 4,
+      "lastAccessed": 1779268454276,
+      "keyFiles": [
+        "mock-data.ts",
+        "translations.ts",
+        "types.ts",
+        "utils.ts"
+      ]
+    },
+    "public": {
+      "path": "public",
+      "purpose": "Public files",
+      "fileCount": 10,
+      "lastAccessed": 1779268454280,
+      "keyFiles": [
+        "apple-icon.png",
+        "icon-dark-32x32.png",
+        "icon-light-32x32.png",
+        "icon.svg",
+        "manifest.json"
+      ]
+    },
+    "styles": {
+      "path": "styles",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1779268454280,
+      "keyFiles": [
+        "globals.css"
+      ]
+    },
+    "app/api": {
+      "path": "app/api",
+      "purpose": "API routes",
+      "fileCount": 0,
+      "lastAccessed": 1779268454282,
+      "keyFiles": []
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "app/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779271311627,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/itinerary/PlannerLayout.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779271395089,
+      "type": "file"
+    },
+    {
+      "path": "app/layout.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779271130882,
+      "type": "file"
+    },
+    {
+      "path": "utils/supabase/proxy.ts",
+      "accessCount": 2,
+      "lastAccessed": 1779337839741,
+      "type": "file"
+    },
+    {
+      "path": "src/app/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269771747,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layouts/VerticalNavbar.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269772245,
+      "type": "file"
+    },
+    {
+      "path": "src/app/(public)/login/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269772782,
+      "type": "file"
+    },
+    {
+      "path": "src/app/(public)/login/LoginPage.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269780995,
+      "type": "file"
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/ai-assistant/AIAssistantWrapper.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269782018,
+      "type": "file"
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/ai-assistant/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269782589,
+      "type": "file"
+    },
+    {
+      "path": "src/components/sections/ai-assistant/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779269782799,
+      "type": "file"
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/ai-assistant/loading.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269855589,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layouts/ProtectedRoutesHeader.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269862112,
+      "type": "file"
+    },
+    {
+      "path": "src/components/layouts/RecentNavSection.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779269862378,
+      "type": "file"
+    },
+    {
+      "path": "components/nav-bar.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270699430,
+      "type": "file"
+    },
+    {
+      "path": "components/planner-layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270699951,
+      "type": "file"
+    },
+    {
+      "path": "components/marketplace.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270700495,
+      "type": "file"
+    },
+    {
+      "path": "components/creator-studio.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270701035,
+      "type": "file"
+    },
+    {
+      "path": "components/chat-panel.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270701488,
+      "type": "file"
+    },
+    {
+      "path": "components/map-view.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270702009,
+      "type": "file"
+    },
+    {
+      "path": "lib/types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779270702551,
+      "type": "file"
+    },
+    {
+      "path": "components/ecsa-logo.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779270702782,
+      "type": "file"
+    },
+    {
+      "path": "components/layouts/AppShell.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271259267,
+      "type": "file"
+    },
+    {
+      "path": "app/(public)/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271279015,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/layout.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271279310,
+      "type": "file"
+    },
+    {
+      "path": "app/(public)/marketplace/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271286098,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271289486,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/create/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271291468,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779271293471,
+      "type": "file"
+    },
+    {
+      "path": "proxy.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779337255143,
+      "type": "file"
+    },
+    {
+      "path": "pnpm-workspace.yaml",
+      "accessCount": 1,
+      "lastAccessed": 1779337320783,
+      "type": "file"
+    },
+    {
+      "path": "middleware.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779337815724,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}

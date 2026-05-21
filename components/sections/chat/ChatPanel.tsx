@@ -8,8 +8,8 @@ import { Send, Sparkles, User, ChevronRight, ShieldCheck, MapPin, X } from 'luci
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { ECSATrailLogo } from '@/components/ecsa-logo'
-import { useLanguage } from '@/components/language-context'
+import { ECSATrailLogo } from '@/components/ai/ECSATrailLogo'
+import { useLanguage } from '@/components/ui/LanguageContext'
 import type { Landmark } from '@/lib/types'
 
 interface ChatPanelProps {
@@ -20,7 +20,7 @@ interface ChatPanelProps {
   onFocusLandmark?: (id: string) => void
 }
 
-const SUGGESTED_PROMPTS_EN = [
+const SUGGESTED_PROMPTS_EN  = [
   'Plan a 3-day trip to Hanoi and Ninh Binh',
   'Best indoor activities for rainy days in Hoi An',
   'Optimize my selected landmarks into a 2-day trip',
