@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1779268454295,
+  "lastScanned": 1779420821708,
   "projectRoot": "/Users/duynd/WebstormProjects/v0-ECSA_Trail-prototype",
   "techStack": {
     "languages": [
@@ -79,7 +79,7 @@
       "path": "app",
       "purpose": "Application code",
       "fileCount": 3,
-      "lastAccessed": 1779268454264,
+      "lastAccessed": 1779420821691,
       "keyFiles": [
         "globals.css",
         "layout.tsx",
@@ -89,21 +89,21 @@
     "components": {
       "path": "components",
       "purpose": "UI components",
-      "fileCount": 14,
-      "lastAccessed": 1779268454264,
+      "fileCount": 13,
+      "lastAccessed": 1779420821693,
       "keyFiles": [
         "ai-service-modal.tsx",
-        "chat-panel.tsx",
         "creator-studio.tsx",
         "ecsa-logo.tsx",
-        "frequency-dashboard.tsx"
+        "frequency-dashboard.tsx",
+        "itinerary-timeline.tsx"
       ]
     },
     "hooks": {
       "path": "hooks",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1779268454274,
+      "lastAccessed": 1779420821693,
       "keyFiles": [
         "use-mobile.ts",
         "use-toast.ts"
@@ -113,7 +113,7 @@
       "path": "lib",
       "purpose": "Library code",
       "fileCount": 4,
-      "lastAccessed": 1779268454276,
+      "lastAccessed": 1779420821694,
       "keyFiles": [
         "mock-data.ts",
         "translations.ts",
@@ -125,7 +125,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 10,
-      "lastAccessed": 1779268454280,
+      "lastAccessed": 1779420821694,
       "keyFiles": [
         "apple-icon.png",
         "icon-dark-32x32.png",
@@ -138,30 +138,107 @@
       "path": "styles",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1779268454280,
+      "lastAccessed": 1779420821694,
       "keyFiles": [
         "globals.css"
       ]
+    },
+    "supabase": {
+      "path": "supabase",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1779420821694,
+      "keyFiles": []
+    },
+    "utils": {
+      "path": "utils",
+      "purpose": "Utility functions",
+      "fileCount": 0,
+      "lastAccessed": 1779420821695,
+      "keyFiles": []
     },
     "app/api": {
       "path": "app/api",
       "purpose": "API routes",
       "fileCount": 0,
-      "lastAccessed": 1779268454282,
+      "lastAccessed": 1779420821695,
       "keyFiles": []
+    },
+    "supabase/migrations": {
+      "path": "supabase/migrations",
+      "purpose": "Database migrations",
+      "fileCount": 1,
+      "lastAccessed": 1779420821696,
+      "keyFiles": [
+        "20260521000000_initial_schema.sql"
+      ]
     }
   },
   "hotPaths": [
     {
-      "path": "app/page.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1779271311627,
+      "path": "supabase/migrations/20260521000000_initial_schema.sql",
+      "accessCount": 16,
+      "lastAccessed": 1779434205614,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/marketplace/Marketplace.tsx",
+      "accessCount": 14,
+      "lastAccessed": 1779438710934,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/create/CreatorStudio.tsx",
+      "accessCount": 11,
+      "lastAccessed": 1779437379129,
       "type": "file"
     },
     {
       "path": "components/sections/itinerary/PlannerLayout.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1779436350169,
+      "type": "file"
+    },
+    {
+      "path": "components/layouts/AppShell.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1779438485529,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/chat/ChatPanel.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779436344537,
+      "type": "file"
+    },
+    {
+      "path": "app/page.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779436355432,
+      "type": "file"
+    },
+    {
+      "path": "lib/types.ts",
+      "accessCount": 4,
+      "lastAccessed": 1779436405633,
+      "type": "file"
+    },
+    {
+      "path": "components/layouts/NavBar.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779438561100,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/itinerary/ItineraryTimeline.tsx",
       "accessCount": 3,
-      "lastAccessed": 1779271395089,
+      "lastAccessed": 1779436100895,
+      "type": "file"
+    },
+    {
+      "path": "lib/mock-data.ts",
+      "accessCount": 3,
+      "lastAccessed": 1779436405232,
       "type": "file"
     },
     {
@@ -174,6 +251,54 @@
       "path": "utils/supabase/proxy.ts",
       "accessCount": 2,
       "lastAccessed": 1779337839741,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/marketplace/AiServiceModal.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436091223,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/itinerary/WeatherSimulation.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436100834,
+      "type": "file"
+    },
+    {
+      "path": "components/maps/MapView.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436101997,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/my-plans/FrequencyDashboard.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436349961,
+      "type": "file"
+    },
+    {
+      "path": "app/(public)/marketplace/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436355636,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436355877,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436356095,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/create/page.tsx",
+      "accessCount": 2,
+      "lastAccessed": 1779436356266,
       "type": "file"
     },
     {
@@ -273,21 +398,9 @@
       "type": "file"
     },
     {
-      "path": "lib/types.ts",
-      "accessCount": 1,
-      "lastAccessed": 1779270702551,
-      "type": "file"
-    },
-    {
       "path": "components/ecsa-logo.tsx",
       "accessCount": 1,
       "lastAccessed": 1779270702782,
-      "type": "file"
-    },
-    {
-      "path": "components/layouts/AppShell.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271259267,
       "type": "file"
     },
     {
@@ -300,30 +413,6 @@
       "path": "app/(dashboard)/layout.tsx",
       "accessCount": 1,
       "lastAccessed": 1779271279310,
-      "type": "file"
-    },
-    {
-      "path": "app/(public)/marketplace/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271286098,
-      "type": "file"
-    },
-    {
-      "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271289486,
-      "type": "file"
-    },
-    {
-      "path": "app/(dashboard)/dashboard/create/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271291468,
-      "type": "file"
-    },
-    {
-      "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271293471,
       "type": "file"
     },
     {
@@ -342,6 +431,30 @@
       "path": "middleware.ts",
       "accessCount": 1,
       "lastAccessed": 1779337815724,
+      "type": "file"
+    },
+    {
+      "path": "app/api/chat/route.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779345653494,
+      "type": "file"
+    },
+    {
+      "path": "components/maps/LandmarkChecklist.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779436006819,
+      "type": "file"
+    },
+    {
+      "path": "components/ui/LanguageContext.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779437974450,
+      "type": "file"
+    },
+    {
+      "path": "components/ui/UserContext.tsx",
+      "accessCount": 1,
+      "lastAccessed": 1779438444299,
       "type": "file"
     }
   ],

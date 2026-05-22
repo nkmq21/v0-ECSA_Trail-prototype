@@ -1,36 +1,52 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Plus, DollarSign, Star, TrendingUp, Zap, Shield, Lock, Globe,
   CheckCircle, AlertCircle, Clock, ChevronRight, Sparkles, BarChart3,
-  Edit3, Trash2, Image, Languages, Route, Package, BadgeCheck, Eye
+  Edit3, Image, Languages, Route, Package, BadgeCheck, Eye, X, MapPin
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
-import { Progress } from '@/components/ui/progress'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
 import { useLanguage } from '@/components/ui/LanguageContext'
-import { MOCK_PLANS, MOCK_CREATORS } from '@/lib/mock-data'
-import type { TravelPlan } from '@/lib/types'
+import { MOCK_PLANS, MOCK_CREATORS, VIETNAM_LANDMARKS } from '@/lib/mock-data'
+import type { TravelPlan, ItineraryStop, Landmark } from '@/lib/types'
 
 const MY_CREATOR = MOCK_CREATORS[0]
-// Plans authored by this creator
-const MY_PLANS = MOCK_PLANS.filter(p => p.creator.id === MY_CREATOR.id)
+const INITIAL_MY_PLANS = MOCK_PLANS.filter(p => p.creator.id === MY_CREATOR.id)
 
-function EarningsCard() {
+const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+const WEEKLY_VIEWS = [142, 198, 167, 234, 189, 276, 312]
+const WEEKLY_SALES = [3, 6, 4, 8, 5, 11, 14]
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+function Users(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+function EarningsCard({ plans }: { plans: TravelPlan[] }) {
   const { t } = useLanguage()
-  const totalRevenue = MY_PLANS.reduce((sum, p) => sum + p.purchaseCount * p.price, 0)
+  const totalRevenue = plans.reduce((sum, p) => sum + p.purchaseCount * p.price, 0)
   const platformCut = totalRevenue * 0.15
   const earnings = totalRevenue - platformCut
   const pendingPayout = earnings * 0.12
 
   const stats = [
     { label: t('totalEarnings'), value: `$${earnings.toFixed(2)}`, icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50' },
-    { label: t('totalSales'), value: MY_PLANS.reduce((s, p) => s + p.purchaseCount, 0), icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10' },
+    { label: t('totalSales'), value: plans.reduce((s, p) => s + p.purchaseCount, 0), icon: TrendingUp, color: 'text-primary', bg: 'bg-primary/10' },
     { label: t('avgRating'), value: MY_CREATOR.rating.toFixed(1), icon: Star, color: 'text-amber-600', bg: 'bg-amber-50' },
     { label: t('pendingPayout'), value: `$${pendingPayout.toFixed(2)}`, icon: Clock, color: 'text-purple-600', bg: 'bg-purple-50' },
   ]
@@ -66,7 +82,6 @@ function EarningsCard() {
         ))}
       </div>
 
-      {/* Revenue breakdown */}
       <div className="mt-4 bg-muted/30 rounded-lg p-3 border border-border">
         <div className="flex items-center justify-between text-xs mb-2">
           <span className="text-muted-foreground">Revenue breakdown</span>
@@ -84,9 +99,23 @@ function EarningsCard() {
   )
 }
 
-function FactCheckBadge({ plan }: { plan: TravelPlan }) {
+// ─────────────────────────────────────────────────────────────────────────────
+
+function FactCheckBadge({ plan, isChecking, isChecked }: { plan: TravelPlan; isChecking?: boolean; isChecked?: boolean }) {
   const { t } = useLanguage()
-  if (plan.factChecked && plan.aiVerified) {
+
+  if (isChecking) {
+    return (
+      <span className="flex items-center gap-1 text-[10px] font-semibold text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+        <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="inline-flex">
+          <Zap className="w-3 h-3" />
+        </motion.span>
+        Checking…
+      </span>
+    )
+  }
+
+  if (isChecked || (plan.factChecked && plan.aiVerified)) {
     return (
       <span className="flex items-center gap-1 text-[10px] font-semibold text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5">
         <CheckCircle className="w-3 h-3" />{t('factCheckPass')}
@@ -107,7 +136,21 @@ function FactCheckBadge({ plan }: { plan: TravelPlan }) {
   )
 }
 
-function PlanRowItem({ plan, onEdit }: { plan: TravelPlan; onEdit: () => void }) {
+// ─────────────────────────────────────────────────────────────────────────────
+
+function PlanRowItem({
+  plan,
+  onEdit,
+  onPreview,
+  isFactChecking,
+  isFactChecked,
+}: {
+  plan: TravelPlan
+  onEdit: () => void
+  onPreview: () => void
+  isFactChecking?: boolean
+  isFactChecked?: boolean
+}) {
   const { t, language } = useLanguage()
   const title = language === 'vi' ? plan.titleVi : plan.title
   const revenue = plan.purchaseCount * plan.price * 0.85
@@ -119,7 +162,6 @@ function PlanRowItem({ plan, onEdit }: { plan: TravelPlan; onEdit: () => void })
       animate={{ opacity: 1, x: 0 }}
       className="flex items-center gap-3 p-4 bg-card border border-border rounded-xl hover:shadow-sm hover:border-primary/20 transition-all"
     >
-      {/* Cover color swatch */}
       <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center flex-shrink-0">
         <Package className="w-5 h-5 text-primary/60" />
       </div>
@@ -127,7 +169,7 @@ function PlanRowItem({ plan, onEdit }: { plan: TravelPlan; onEdit: () => void })
       <div className="flex-1 min-w-0">
         <div className="flex items-start gap-2 mb-1">
           <h3 className="text-sm font-semibold text-foreground truncate">{title}</h3>
-          <FactCheckBadge plan={plan} />
+          <FactCheckBadge plan={plan} isChecking={isFactChecking} isChecked={isFactChecked} />
         </div>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <span>${plan.price}</span>
@@ -150,13 +192,15 @@ function PlanRowItem({ plan, onEdit }: { plan: TravelPlan; onEdit: () => void })
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg" onClick={onEdit}>
           <Edit3 className="w-3.5 h-3.5" />
         </Button>
-        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground">
+        <Button variant="ghost" size="sm" className="h-8 w-8 p-0 rounded-lg text-muted-foreground hover:text-foreground" onClick={onPreview}>
           <Eye className="w-3.5 h-3.5" />
         </Button>
       </div>
     </motion.div>
   )
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
 
 function AiPolishPanel({ onClose }: { onClose: () => void }) {
   const { t } = useLanguage()
@@ -213,10 +257,7 @@ function AiPolishPanel({ onClose }: { onClose: () => void }) {
             )}>
               {done.has(id) ? <CheckCircle className="w-4 h-4 text-green-600" /> :
                 running === id ? (
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                  >
+                  <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
                     <Zap className="w-4 h-4 text-primary" />
                   </motion.div>
                 ) : <Icon className="w-4 h-4 text-muted-foreground" />}
@@ -233,12 +274,97 @@ function AiPolishPanel({ onClose }: { onClose: () => void }) {
   )
 }
 
-function SharingPanel() {
+// ─────────────────────────────────────────────────────────────────────────────
+
+function AnalyticsPanel({ onClose, plans }: { onClose: () => void; plans: TravelPlan[] }) {
+  const maxView = Math.max(...WEEKLY_VIEWS)
+  const totalViews = WEEKLY_VIEWS.reduce((a, b) => a + b, 0)
+  const totalSalesWeek = WEEKLY_SALES.reduce((a, b) => a + b, 0)
+  const convRate = ((totalSalesWeek / totalViews) * 100).toFixed(1)
+  const bestDay = WEEK_DAYS[WEEKLY_VIEWS.indexOf(maxView)]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -8 }}
+      className="bg-card border border-amber-200 rounded-xl p-5 space-y-4"
+    >
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-amber-600" />
+          <h3 className="font-semibold text-sm text-foreground">Analytics</h3>
+          <span className="text-[10px] text-muted-foreground bg-muted rounded-full px-2 py-0.5">Last 7 days</span>
+        </div>
+        <Button variant="ghost" size="sm" onClick={onClose} className="h-7 text-xs rounded-lg">Done</Button>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {[
+          { label: 'Plan Views', value: totalViews.toLocaleString(), color: 'text-amber-600', bg: 'bg-amber-50 border-amber-100' },
+          { label: 'Sales', value: totalSalesWeek, color: 'text-green-600', bg: 'bg-green-50 border-green-100' },
+          { label: 'Conversion', value: `${convRate}%`, color: 'text-primary', bg: 'bg-primary/5 border-primary/10' },
+          { label: 'Best Day', value: bestDay, color: 'text-purple-600', bg: 'bg-purple-50 border-purple-100' },
+        ].map(({ label, value, color, bg }) => (
+          <div key={label} className={cn('rounded-lg p-2.5 border text-center', bg)}>
+            <div className={cn('text-base font-bold', color)}>{value}</div>
+            <div className="text-[10px] text-muted-foreground">{label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div>
+        <p className="text-[10px] text-muted-foreground mb-2">Daily views</p>
+        <div className="flex items-end gap-1.5 h-20">
+          {WEEKLY_VIEWS.map((v, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center gap-1">
+              <motion.div
+                initial={{ height: 0 }}
+                animate={{ height: `${Math.round((v / maxView) * 60)}px` }}
+                transition={{ delay: i * 0.06, duration: 0.4, ease: 'easeOut' }}
+                className="w-full bg-amber-400/80 rounded-sm"
+              />
+              <span className="text-[9px] text-muted-foreground">{WEEK_DAYS[i].slice(0, 1)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <p className="text-[10px] font-medium text-muted-foreground mb-2">Plan performance</p>
+        <div className="space-y-1.5">
+          {plans.map((plan, i) => {
+            const planViews = Math.floor(totalViews / plans.length * (1 + (plans.length - i) * 0.2))
+            const planEarned = (plan.purchaseCount * plan.price * 0.85).toFixed(0)
+            return (
+              <div key={plan.id} className="flex items-center gap-2 text-xs">
+                <span className="w-4 h-4 rounded-sm bg-primary/10 text-primary text-[9px] font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
+                <span className="flex-1 truncate text-foreground font-medium">{plan.title}</span>
+                <span className="text-muted-foreground">{planViews.toLocaleString()} views</span>
+                <span className="text-green-600 font-medium">${planEarned}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+function SharingPanel({ highlighted }: { highlighted?: boolean }) {
   const { t } = useLanguage()
   const [unlocked, setUnlocked] = useState(false)
 
   return (
-    <div className="bg-card border border-border rounded-xl p-5">
+    <motion.div
+      animate={highlighted ? {
+        boxShadow: ['0 0 0 0px #a855f700', '0 0 0 4px #a855f766', '0 0 0 0px #a855f700'],
+      } : {}}
+      transition={{ duration: 0.8 }}
+      className="bg-card border border-border rounded-xl p-5"
+    >
       <div className="flex items-start gap-3 mb-4">
         <div className="w-9 h-9 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
           <Lock className="w-4 h-4 text-amber-600" />
@@ -279,17 +405,187 @@ function SharingPanel() {
           </button>
         </div>
       )}
-    </div>
+    </motion.div>
   )
 }
 
-function NewPlanForm({ onClose }: { onClose: () => void }) {
+// ─────────────────────────────────────────────────────────────────────────────
+
+function CreatorPlanPreviewModal({
+  plan,
+  open,
+  onClose,
+  onEdit,
+}: {
+  plan: TravelPlan | null
+  open: boolean
+  onClose: () => void
+  onEdit: () => void
+}) {
+  const { language } = useLanguage()
+  if (!plan) return null
+  const title = language === 'vi' ? plan.titleVi : plan.title
+
+  return (
+    <Dialog open={open} onOpenChange={v => !v && onClose()}>
+      <DialogContent showCloseButton={false} className="max-w-lg max-h-[85dvh] overflow-hidden flex flex-col p-0 gap-0">
+        <DialogHeader className="flex-none px-5 pt-5 pb-4 border-b border-border">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap gap-1 mb-1.5">
+                <span className="text-[10px] border border-border rounded-full px-2 py-0.5">{plan.category}</span>
+                <span className="text-[10px] border border-border rounded-full px-2 py-0.5">{plan.difficulty}</span>
+                {plan.aiVerified && (
+                  <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 rounded-full px-2 py-0.5 flex items-center gap-1">
+                    <Zap className="w-2.5 h-2.5" />AI Verified
+                  </span>
+                )}
+              </div>
+              <DialogTitle className="text-base font-bold leading-tight">{title}</DialogTitle>
+            </div>
+            <DialogClose asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full flex-shrink-0">
+                <X className="w-4 h-4" />
+              </Button>
+            </DialogClose>
+          </div>
+        </DialogHeader>
+
+        <ScrollArea className="flex-1 min-h-0">
+          <div className="p-5 space-y-4">
+            <div className="grid grid-cols-3 gap-2">
+              {[
+                { label: 'Duration', value: `${plan.duration}d` },
+                { label: 'Price', value: `$${plan.price}` },
+                { label: 'Sales', value: plan.purchaseCount },
+              ].map(({ label, value }) => (
+                <div key={label} className="bg-muted/50 rounded-lg p-2.5 text-center border border-border">
+                  <div className="text-sm font-bold text-foreground">{value}</div>
+                  <div className="text-[10px] text-muted-foreground">{label}</div>
+                </div>
+              ))}
+            </div>
+
+            {plan.highlights.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-foreground mb-2">Highlights</p>
+                <ul className="space-y-1.5">
+                  {plan.highlights.map((h, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <ChevronRight className="w-3.5 h-3.5 text-primary flex-shrink-0 mt-0.5" />
+                      {h}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {plan.stops.length > 0 && (
+              <div>
+                <p className="text-xs font-semibold text-foreground mb-2">{plan.stops.length} Stops</p>
+                <div className="space-y-1.5">
+                  {plan.stops.map((stop, i) => (
+                    <div key={i} className="flex items-center gap-2 text-xs bg-muted/40 rounded-lg p-2 border border-border">
+                      <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[9px] font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
+                      <span className="flex-1 font-medium text-foreground">{stop.landmark.nameEn}</span>
+                      <span className="text-muted-foreground">{stop.landmark.province}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap gap-1.5">
+              {plan.tags.map(tag => (
+                <span key={tag} className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full border border-border">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </ScrollArea>
+
+        <div className="flex-none border-t border-border p-4 flex justify-end gap-2">
+          <Button variant="ghost" size="sm" className="rounded-lg" onClick={onClose}>Close</Button>
+          <Button size="sm" className="rounded-lg gap-1.5" onClick={() => { onClose(); onEdit() }}>
+            <Edit3 className="w-3.5 h-3.5" />Edit Plan
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+function NewPlanForm({
+  onClose,
+  onPublish,
+  initialPlan,
+}: {
+  onClose: () => void
+  onPublish: (plan: TravelPlan) => void
+  initialPlan?: TravelPlan | null
+}) {
   const { t } = useLanguage()
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('9.99')
-  const [duration, setDuration] = useState('3')
-  const [category, setCategory] = useState('cultural')
-  const [province, setProvince] = useState('Hà Nội')
+  const [title, setTitle] = useState(initialPlan?.title ?? '')
+  const [price, setPrice] = useState(initialPlan?.price?.toString() ?? '9.99')
+  const [duration, setDuration] = useState(initialPlan?.duration?.toString() ?? '3')
+  const [category, setCategory] = useState<TravelPlan['category']>(initialPlan?.category ?? 'cultural')
+  const [province, setProvince] = useState(initialPlan?.province ?? 'Hà Nội')
+  const [stops, setStops] = useState<ItineraryStop[]>(initialPlan?.stops ?? [])
+  const [showPicker, setShowPicker] = useState(false)
+  const [saved, setSaved] = useState(false)
+
+  const isEditing = !!initialPlan
+
+  function handleAddStop(landmark: Landmark) {
+    if (stops.some(s => s.landmark.id === landmark.id)) return
+    setStops(prev => [
+      ...prev,
+      { landmark, order: prev.length + 1, travelTime: prev.length === 0 ? 0 : 30, transportMode: 'walk', notes: '' },
+    ])
+  }
+
+  function handleRemoveStop(id: string) {
+    setStops(prev => prev.filter(s => s.landmark.id !== id).map((s, i) => ({ ...s, order: i + 1 })))
+  }
+
+  function handleSaveDraft() {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  function handlePublish() {
+    const plan: TravelPlan = {
+      id: initialPlan?.id ?? `plan-${Date.now()}`,
+      title,
+      titleVi: title,
+      creator: MY_CREATOR,
+      price: parseFloat(price) || 9.99,
+      originalPrice: initialPlan?.originalPrice,
+      rating: initialPlan?.rating ?? 0,
+      reviewCount: initialPlan?.reviewCount ?? 0,
+      purchaseCount: initialPlan?.purchaseCount ?? 0,
+      province,
+      provinces: [province],
+      duration: parseInt(duration) || 3,
+      difficulty: 'easy',
+      category: category as TravelPlan['category'],
+      coverImage: '',
+      highlights: [],
+      highlightsVi: [],
+      stops,
+      aiVerified: false,
+      factChecked: false,
+      includesTransport: false,
+      includesTips: false,
+      includesMedia: false,
+      createdAt: initialPlan?.createdAt ?? new Date().toISOString().split('T')[0],
+      updatedAt: new Date().toISOString().split('T')[0],
+      tags: [category],
+      shared: false,
+    }
+    onPublish(plan)
+  }
 
   return (
     <motion.div
@@ -299,7 +595,7 @@ function NewPlanForm({ onClose }: { onClose: () => void }) {
       className="bg-card border border-border rounded-xl overflow-hidden"
     >
       <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-muted/30">
-        <h3 className="font-semibold text-sm text-foreground">{t('planBuilder')}</h3>
+        <h3 className="font-semibold text-sm text-foreground">{isEditing ? 'Edit Plan' : t('planBuilder')}</h3>
         <Button variant="ghost" size="sm" onClick={onClose} className="h-7 text-xs rounded-lg">Cancel</Button>
       </div>
       <div className="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -338,7 +634,7 @@ function NewPlanForm({ onClose }: { onClose: () => void }) {
           <label className="text-xs font-medium text-muted-foreground mb-1.5 block">{t('planCategory')}</label>
           <select
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={e => setCategory(e.target.value as TravelPlan['category'])}
             className="w-full px-3 py-2.5 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 text-foreground"
           >
             {['cultural', 'nature', 'adventure', 'food', 'city', 'beach'].map(c => (
@@ -355,20 +651,82 @@ function NewPlanForm({ onClose }: { onClose: () => void }) {
           />
         </div>
 
-        {/* Add stops placeholder */}
         <div className="sm:col-span-2">
-          <label className="text-xs font-medium text-muted-foreground mb-2 block">{t('planStops')}</label>
-          <div className="border-2 border-dashed border-border rounded-lg p-6 flex flex-col items-center gap-2 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer">
-            <Plus className="w-6 h-6" />
+          <label className="text-xs font-medium text-muted-foreground mb-2 block">{t('planStops')} ({stops.length})</label>
+
+          {stops.length > 0 && (
+            <div className="space-y-1.5 mb-2">
+              {stops.map((stop, i) => (
+                <div key={stop.landmark.id} className="flex items-center gap-2 bg-muted/40 border border-border rounded-lg px-3 py-2">
+                  <span className="w-5 h-5 rounded-full bg-primary/10 text-primary text-[9px] font-bold flex items-center justify-center flex-shrink-0">{i + 1}</span>
+                  <span className="flex-1 text-xs font-medium text-foreground truncate">{stop.landmark.nameEn}</span>
+                  <span className="text-[10px] text-muted-foreground">{stop.landmark.province}</span>
+                  <button onClick={() => handleRemoveStop(stop.landmark.id)} className="text-muted-foreground hover:text-red-500 transition-colors">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div
+            onClick={() => setShowPicker(v => !v)}
+            className="border-2 border-dashed border-border rounded-lg p-4 flex flex-col items-center gap-1.5 text-muted-foreground hover:border-primary/40 hover:bg-primary/5 transition-all cursor-pointer"
+          >
+            <Plus className="w-5 h-5" />
             <span className="text-sm font-medium">{t('addStop')}</span>
-            <span className="text-xs">Drag landmarks from the map or search</span>
+            <span className="text-xs">{showPicker ? 'Click a landmark below to add' : 'Click to browse landmarks'}</span>
           </div>
+
+          <AnimatePresence>
+            {showPicker && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden"
+              >
+                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5 max-h-52 overflow-y-auto pr-1">
+                  {VIETNAM_LANDMARKS.map(lm => {
+                    const added = stops.some(s => s.landmark.id === lm.id)
+                    return (
+                      <button
+                        key={lm.id}
+                        onClick={() => handleAddStop(lm)}
+                        disabled={added}
+                        className={cn(
+                          'flex items-center gap-2 p-2.5 rounded-lg border text-left transition-all',
+                          added
+                            ? 'bg-green-50 border-green-200 cursor-default'
+                            : 'bg-muted/30 border-border hover:border-primary/30 hover:bg-primary/5'
+                        )}
+                      >
+                        <MapPin className={cn('w-3.5 h-3.5 flex-shrink-0', added ? 'text-green-600' : 'text-primary')} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs font-medium text-foreground truncate">{lm.nameEn}</p>
+                          <p className="text-[10px] text-muted-foreground">{lm.province}</p>
+                        </div>
+                        {added && <CheckCircle className="w-3.5 h-3.5 text-green-600 flex-shrink-0" />}
+                      </button>
+                    )
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="sm:col-span-2 flex items-center gap-2 justify-end pt-2 border-t border-border">
-          <Button variant="outline" size="sm" className="rounded-lg">{t('saveDraft')}</Button>
-          <Button size="sm" className="rounded-lg gap-1.5" disabled={!title}>
-            <Globe className="w-3.5 h-3.5" />{t('publishPlan')}
+          <Button
+            variant="outline"
+            size="sm"
+            className={cn('rounded-lg transition-all', saved && 'border-green-300 text-green-700 bg-green-50')}
+            onClick={handleSaveDraft}
+          >
+            {saved ? <><CheckCircle className="w-3.5 h-3.5 mr-1.5" />Saved!</> : t('saveDraft')}
+          </Button>
+          <Button size="sm" className="rounded-lg gap-1.5" disabled={!title} onClick={handlePublish}>
+            <Globe className="w-3.5 h-3.5" />{isEditing ? 'Save Changes' : t('publishPlan')}
           </Button>
         </div>
       </div>
@@ -376,27 +734,73 @@ function NewPlanForm({ onClose }: { onClose: () => void }) {
   )
 }
 
-// Missing import — add here since it was used above
-function Users(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  )
-}
+// ─────────────────────────────────────────────────────────────────────────────
 
 export function CreatorStudio() {
   const { t } = useLanguage()
+  const [myPlans, setMyPlans] = useState<TravelPlan[]>(INITIAL_MY_PLANS)
   const [showNewPlan, setShowNewPlan] = useState(false)
   const [showAiPolish, setShowAiPolish] = useState(false)
+  const [showAnalytics, setShowAnalytics] = useState(false)
   const [editingPlan, setEditingPlan] = useState<TravelPlan | null>(null)
+  const [previewPlan, setPreviewPlan] = useState<TravelPlan | null>(null)
+  const [checkingPlanId, setCheckingPlanId] = useState<string | null>(null)
+  const [factCheckDoneIds, setFactCheckDoneIds] = useState<Set<string>>(new Set())
+  const [factChecking, setFactChecking] = useState(false)
+  const [sharingHighlight, setSharingHighlight] = useState(false)
+  const sharingRef = useRef<HTMLDivElement>(null)
+
+  function handleFactCheckAll() {
+    if (factChecking) return
+    setFactChecking(true)
+    setFactCheckDoneIds(new Set())
+    let i = 0
+
+    function checkNext() {
+      if (i >= myPlans.length) {
+        setFactChecking(false)
+        setCheckingPlanId(null)
+        return
+      }
+      const plan = myPlans[i]
+      setCheckingPlanId(plan.id)
+      setTimeout(() => {
+        setFactCheckDoneIds(prev => new Set([...prev, plan.id]))
+        i++
+        checkNext()
+      }, 900)
+    }
+
+    checkNext()
+  }
+
+  function handlePremiumSharing() {
+    setSharingHighlight(true)
+    sharingRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    setTimeout(() => setSharingHighlight(false), 1500)
+  }
+
+  function handlePublish(plan: TravelPlan) {
+    if (editingPlan) {
+      setMyPlans(prev => prev.map(p => p.id === plan.id ? plan : p))
+    } else {
+      setMyPlans(prev => [plan, ...prev])
+    }
+    setShowNewPlan(false)
+    setEditingPlan(null)
+  }
+
+  function handleEditPlan(plan: TravelPlan) {
+    setEditingPlan(plan)
+    setShowNewPlan(true)
+    setShowAiPolish(false)
+    setShowAnalytics(false)
+  }
+
+  const showQuickActions = !showAiPolish && !showNewPlan && !showAnalytics
 
   return (
     <div className="flex flex-col h-full min-h-0 overflow-hidden">
-      {/* Header — flex-none so it never shrinks or scrolls */}
       <div className="flex-none border-b border-border bg-card/60 backdrop-blur-sm px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-start justify-between gap-4">
           <div className="min-w-0">
@@ -406,83 +810,87 @@ export function CreatorStudio() {
           <Button
             size="sm"
             className="rounded-xl gap-1.5 flex-shrink-0"
-            onClick={() => { setShowNewPlan(true); setShowAiPolish(false) }}
+            onClick={() => { setShowNewPlan(true); setShowAiPolish(false); setShowAnalytics(false); setEditingPlan(null) }}
           >
             <Plus className="w-4 h-4" />{t('createNewPlan')}
           </Button>
         </div>
       </div>
 
-      {/* Scrollable body — flex-1 min-h-0 for proper overflow containment */}
       <ScrollArea className="flex-1 min-h-0">
         <div className="max-w-4xl mx-auto px-6 py-5 space-y-5">
-          {/* Earnings overview */}
-          <EarningsCard />
+          <EarningsCard plans={myPlans} />
 
-          {/* New plan form */}
           <AnimatePresence>
             {showNewPlan && (
-              <NewPlanForm onClose={() => setShowNewPlan(false)} />
+              <NewPlanForm
+                key={editingPlan?.id ?? 'new'}
+                onClose={() => { setShowNewPlan(false); setEditingPlan(null) }}
+                onPublish={handlePublish}
+                initialPlan={editingPlan}
+              />
             )}
           </AnimatePresence>
 
-          {/* AI Polish tools */}
           <AnimatePresence>
-            {showAiPolish && (
-              <AiPolishPanel onClose={() => setShowAiPolish(false)} />
-            )}
+            {showAiPolish && <AiPolishPanel onClose={() => setShowAiPolish(false)} />}
           </AnimatePresence>
 
-          {/* Quick action buttons */}
-          {!showAiPolish && !showNewPlan && (
+          <AnimatePresence>
+            {showAnalytics && <AnalyticsPanel onClose={() => setShowAnalytics(false)} plans={myPlans} />}
+          </AnimatePresence>
+
+          {showQuickActions && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
-                { icon: Sparkles, label: t('aiPolish'), onClick: () => setShowAiPolish(true), color: 'text-primary bg-primary/10 border-primary/20' },
-                { icon: Shield, label: 'Fact-Check All', onClick: () => {}, color: 'text-green-600 bg-green-50 border-green-200' },
-                { icon: BarChart3, label: 'Analytics', onClick: () => {}, color: 'text-amber-600 bg-amber-50 border-amber-200' },
-                { icon: Globe, label: t('premiumSharing'), onClick: () => {}, color: 'text-purple-600 bg-purple-50 border-purple-200' },
-              ].map(({ icon: Icon, label, onClick, color }) => (
+                { icon: Sparkles, label: t('aiPolish'), onClick: () => setShowAiPolish(true), colorClass: 'bg-primary/5 border-primary/20 hover:bg-primary/10', iconClass: 'text-primary' },
+                { icon: Shield, label: factChecking ? 'Checking…' : 'Fact-Check All', onClick: handleFactCheckAll, colorClass: 'bg-green-50 border-green-200 hover:bg-green-100', iconClass: 'text-green-600' },
+                { icon: BarChart3, label: 'Analytics', onClick: () => setShowAnalytics(true), colorClass: 'bg-amber-50 border-amber-200 hover:bg-amber-100', iconClass: 'text-amber-600' },
+                { icon: Globe, label: t('premiumSharing'), onClick: handlePremiumSharing, colorClass: 'bg-purple-50 border-purple-200 hover:bg-purple-100', iconClass: 'text-purple-600' },
+              ].map(({ icon: Icon, label, onClick, colorClass, iconClass }) => (
                 <button
                   key={label}
                   onClick={onClick}
-                  className={cn(
-                    'flex flex-col items-center gap-2 p-4 rounded-xl border text-center transition-all hover:shadow-sm hover:-translate-y-0.5',
-                    color.includes('primary') ? 'bg-primary/5 border-primary/20 hover:bg-primary/10' :
-                    color.includes('green') ? 'bg-green-50 border-green-200 hover:bg-green-100' :
-                    color.includes('amber') ? 'bg-amber-50 border-amber-200 hover:bg-amber-100' :
-                    'bg-purple-50 border-purple-200 hover:bg-purple-100'
-                  )}
+                  className={cn('flex flex-col items-center gap-2 p-4 rounded-xl border text-center transition-all hover:shadow-sm hover:-translate-y-0.5', colorClass)}
                 >
-                  <Icon className={cn('w-5 h-5', color.split(' ')[0])} />
+                  {factChecking && label === 'Checking…' ? (
+                    <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} className="inline-flex">
+                      <Icon className={cn('w-5 h-5', iconClass)} />
+                    </motion.span>
+                  ) : (
+                    <Icon className={cn('w-5 h-5', iconClass)} />
+                  )}
                   <span className="text-xs font-medium text-foreground leading-tight">{label}</span>
                 </button>
               ))}
             </div>
           )}
 
-          {/* My plans list */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-semibold text-sm text-foreground">{t('myPlans')}</h2>
-              <span className="text-xs text-muted-foreground">{MY_PLANS.length} plans</span>
+              <span className="text-xs text-muted-foreground">{myPlans.length} plans</span>
             </div>
             <div className="space-y-2">
               <AnimatePresence>
-                {MY_PLANS.map(plan => (
+                {myPlans.map(plan => (
                   <PlanRowItem
                     key={plan.id}
                     plan={plan}
-                    onEdit={() => setEditingPlan(plan)}
+                    onEdit={() => handleEditPlan(plan)}
+                    onPreview={() => setPreviewPlan(plan)}
+                    isFactChecking={checkingPlanId === plan.id}
+                    isFactChecked={factCheckDoneIds.has(plan.id)}
                   />
                 ))}
               </AnimatePresence>
             </div>
           </div>
 
-          {/* Sharing restriction panel */}
-          <SharingPanel />
+          <div ref={sharingRef}>
+            <SharingPanel highlighted={sharingHighlight} />
+          </div>
 
-          {/* Platform policy note */}
           <div className="flex items-start gap-2.5 text-xs text-muted-foreground bg-muted/50 rounded-xl p-4 border border-border">
             <Shield className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
             <div className="space-y-1">
@@ -492,6 +900,13 @@ export function CreatorStudio() {
           </div>
         </div>
       </ScrollArea>
+
+      <CreatorPlanPreviewModal
+        plan={previewPlan}
+        open={!!previewPlan}
+        onClose={() => setPreviewPlan(null)}
+        onEdit={() => previewPlan && handleEditPlan(previewPlan)}
+      />
     </div>
   )
 }
