@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1779420821708,
+  "lastScanned": 1779592493402,
   "projectRoot": "/Users/duynd/WebstormProjects/v0-ECSA_Trail-prototype",
   "techStack": {
     "languages": [
@@ -75,11 +75,20 @@
   },
   "customNotes": [],
   "directoryMap": {
+    "AI_plans": {
+      "path": "AI_plans",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1779592493308,
+      "keyFiles": [
+        "gamification-schema-plan.md"
+      ]
+    },
     "app": {
       "path": "app",
       "purpose": "Application code",
       "fileCount": 3,
-      "lastAccessed": 1779420821691,
+      "lastAccessed": 1779592493328,
       "keyFiles": [
         "globals.css",
         "layout.tsx",
@@ -90,7 +99,7 @@
       "path": "components",
       "purpose": "UI components",
       "fileCount": 13,
-      "lastAccessed": 1779420821693,
+      "lastAccessed": 1779592493341,
       "keyFiles": [
         "ai-service-modal.tsx",
         "creator-studio.tsx",
@@ -103,7 +112,7 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1779420821693,
+      "lastAccessed": 1779592493343,
       "keyFiles": [
         "use-mobile.ts",
         "use-toast.ts"
@@ -113,7 +122,7 @@
       "path": "lib",
       "purpose": "Library code",
       "fileCount": 4,
-      "lastAccessed": 1779420821694,
+      "lastAccessed": 1779592493344,
       "keyFiles": [
         "mock-data.ts",
         "translations.ts",
@@ -125,7 +134,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 10,
-      "lastAccessed": 1779420821694,
+      "lastAccessed": 1779592493346,
       "keyFiles": [
         "apple-icon.png",
         "icon-dark-32x32.png",
@@ -138,7 +147,7 @@
       "path": "styles",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1779420821694,
+      "lastAccessed": 1779592493350,
       "keyFiles": [
         "globals.css"
       ]
@@ -147,38 +156,39 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1779420821694,
+      "lastAccessed": 1779592493359,
       "keyFiles": []
     },
     "utils": {
       "path": "utils",
       "purpose": "Utility functions",
       "fileCount": 0,
-      "lastAccessed": 1779420821695,
+      "lastAccessed": 1779592493365,
       "keyFiles": []
     },
     "app/api": {
       "path": "app/api",
       "purpose": "API routes",
       "fileCount": 0,
-      "lastAccessed": 1779420821695,
+      "lastAccessed": 1779592493379,
       "keyFiles": []
     },
     "supabase/migrations": {
       "path": "supabase/migrations",
       "purpose": "Database migrations",
-      "fileCount": 1,
-      "lastAccessed": 1779420821696,
+      "fileCount": 2,
+      "lastAccessed": 1779592493401,
       "keyFiles": [
-        "20260521000000_initial_schema.sql"
+        "20260521000000_initial_schema.sql",
+        "20260523000000_gamification_schema.sql"
       ]
     }
   },
   "hotPaths": [
     {
       "path": "supabase/migrations/20260521000000_initial_schema.sql",
-      "accessCount": 16,
-      "lastAccessed": 1779434205614,
+      "accessCount": 17,
+      "lastAccessed": 1779592929767,
       "type": "file"
     },
     {
@@ -206,6 +216,12 @@
       "type": "file"
     },
     {
+      "path": "lib/types.ts",
+      "accessCount": 5,
+      "lastAccessed": 1779608199915,
+      "type": "file"
+    },
+    {
       "path": "components/sections/chat/ChatPanel.tsx",
       "accessCount": 4,
       "lastAccessed": 1779436344537,
@@ -215,12 +231,6 @@
       "path": "app/page.tsx",
       "accessCount": 4,
       "lastAccessed": 1779436355432,
-      "type": "file"
-    },
-    {
-      "path": "lib/types.ts",
-      "accessCount": 4,
-      "lastAccessed": 1779436405633,
       "type": "file"
     },
     {
@@ -299,6 +309,12 @@
       "path": "app/(dashboard)/dashboard/create/page.tsx",
       "accessCount": 2,
       "lastAccessed": 1779436356266,
+      "type": "file"
+    },
+    {
+      "path": "types/database.types.ts",
+      "accessCount": 2,
+      "lastAccessed": 1779608689093,
       "type": "file"
     },
     {
@@ -455,6 +471,18 @@
       "path": "components/ui/UserContext.tsx",
       "accessCount": 1,
       "lastAccessed": 1779438444299,
+      "type": "file"
+    },
+    {
+      "path": "AI_plans/db-function-split-plan.md",
+      "accessCount": 1,
+      "lastAccessed": 1779593179425,
+      "type": "file"
+    },
+    {
+      "path": "utils/supabase/server.ts",
+      "accessCount": 1,
+      "lastAccessed": 1779608199652,
       "type": "file"
     }
   ],
