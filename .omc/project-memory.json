@@ -187,20 +187,20 @@
   "hotPaths": [
     {
       "path": "supabase/migrations/20260521000000_initial_schema.sql",
-      "accessCount": 17,
-      "lastAccessed": 1779592929767,
+      "accessCount": 18,
+      "lastAccessed": 1779615332314,
       "type": "file"
     },
     {
       "path": "components/sections/marketplace/Marketplace.tsx",
-      "accessCount": 14,
-      "lastAccessed": 1779438710934,
+      "accessCount": 15,
+      "lastAccessed": 1779615341299,
       "type": "file"
     },
     {
       "path": "components/sections/create/CreatorStudio.tsx",
-      "accessCount": 11,
-      "lastAccessed": 1779437379129,
+      "accessCount": 12,
+      "lastAccessed": 1779615344078,
       "type": "file"
     },
     {
@@ -217,14 +217,14 @@
     },
     {
       "path": "lib/types.ts",
-      "accessCount": 5,
-      "lastAccessed": 1779608199915,
+      "accessCount": 6,
+      "lastAccessed": 1779615351358,
       "type": "file"
     },
     {
       "path": "components/sections/chat/ChatPanel.tsx",
-      "accessCount": 4,
-      "lastAccessed": 1779436344537,
+      "accessCount": 5,
+      "lastAccessed": 1779615350695,
       "type": "file"
     },
     {
@@ -241,14 +241,20 @@
     },
     {
       "path": "components/sections/itinerary/ItineraryTimeline.tsx",
-      "accessCount": 3,
-      "lastAccessed": 1779436100895,
+      "accessCount": 4,
+      "lastAccessed": 1779615344169,
       "type": "file"
     },
     {
       "path": "lib/mock-data.ts",
       "accessCount": 3,
       "lastAccessed": 1779436405232,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779674955360,
       "type": "file"
     },
     {
@@ -297,12 +303,6 @@
       "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
       "accessCount": 2,
       "lastAccessed": 1779436355877,
-      "type": "file"
-    },
-    {
-      "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1779436356095,
       "type": "file"
     },
     {
