@@ -49,8 +49,8 @@ export async function updateSession(request: NextRequest) {
 
     // Public routes that don't require authentication
     // Use exact match for root and startsWith for paths that have sub-routes
-    const publicRoutes = ['/auth', '/api', '/marketplace', '/dashboard'];
-    const publicExactRoutes = ['/', '/login'];
+    const publicRoutes = ['/auth', '/api', '/marketplace', '/callback'];
+    const publicExactRoutes = ['/', '/login', '/signup'];
 
     const isPublicRoute =
         publicExactRoutes.includes(pathname) ||
@@ -60,7 +60,7 @@ export async function updateSession(request: NextRequest) {
     // Redirect logged-in users away from login page to dashboard
     if (user && pathname === '/login') {
         const url = request.nextUrl.clone();
-        url.pathname = '/dashboard';
+        url.pathname = '/dashboard/chat';
         const redirectResponse = NextResponse.redirect(url);
 
         supabaseResponse.cookies.getAll().forEach((cookie) => {

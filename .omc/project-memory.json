@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1779592493402,
+  "lastScanned": 1779696212811,
   "projectRoot": "/Users/duynd/WebstormProjects/v0-ECSA_Trail-prototype",
   "techStack": {
     "languages": [
@@ -75,20 +75,11 @@
   },
   "customNotes": [],
   "directoryMap": {
-    "AI_plans": {
-      "path": "AI_plans",
-      "purpose": null,
-      "fileCount": 1,
-      "lastAccessed": 1779592493308,
-      "keyFiles": [
-        "gamification-schema-plan.md"
-      ]
-    },
     "app": {
       "path": "app",
       "purpose": "Application code",
       "fileCount": 3,
-      "lastAccessed": 1779592493328,
+      "lastAccessed": 1779696212795,
       "keyFiles": [
         "globals.css",
         "layout.tsx",
@@ -99,7 +90,7 @@
       "path": "components",
       "purpose": "UI components",
       "fileCount": 13,
-      "lastAccessed": 1779592493341,
+      "lastAccessed": 1779696212795,
       "keyFiles": [
         "ai-service-modal.tsx",
         "creator-studio.tsx",
@@ -112,7 +103,7 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1779592493343,
+      "lastAccessed": 1779696212797,
       "keyFiles": [
         "use-mobile.ts",
         "use-toast.ts"
@@ -122,7 +113,7 @@
       "path": "lib",
       "purpose": "Library code",
       "fileCount": 4,
-      "lastAccessed": 1779592493344,
+      "lastAccessed": 1779696212798,
       "keyFiles": [
         "mock-data.ts",
         "translations.ts",
@@ -134,7 +125,7 @@
       "path": "public",
       "purpose": "Public files",
       "fileCount": 10,
-      "lastAccessed": 1779592493346,
+      "lastAccessed": 1779696212798,
       "keyFiles": [
         "apple-icon.png",
         "icon-dark-32x32.png",
@@ -147,7 +138,7 @@
       "path": "styles",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1779592493350,
+      "lastAccessed": 1779696212798,
       "keyFiles": [
         "globals.css"
       ]
@@ -156,51 +147,56 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1779592493359,
+      "lastAccessed": 1779696212798,
       "keyFiles": []
     },
     "utils": {
       "path": "utils",
       "purpose": "Utility functions",
       "fileCount": 0,
-      "lastAccessed": 1779592493365,
+      "lastAccessed": 1779696212798,
       "keyFiles": []
     },
     "app/api": {
       "path": "app/api",
       "purpose": "API routes",
       "fileCount": 0,
-      "lastAccessed": 1779592493379,
+      "lastAccessed": 1779696212798,
       "keyFiles": []
     },
     "supabase/migrations": {
       "path": "supabase/migrations",
       "purpose": "Database migrations",
-      "fileCount": 2,
-      "lastAccessed": 1779592493401,
+      "fileCount": 1,
+      "lastAccessed": 1779696212798,
       "keyFiles": [
-        "20260521000000_initial_schema.sql",
-        "20260523000000_gamification_schema.sql"
+        "20260521000000_initial_schema.sql"
       ]
     }
   },
   "hotPaths": [
     {
       "path": "supabase/migrations/20260521000000_initial_schema.sql",
-      "accessCount": 18,
-      "lastAccessed": 1779615332314,
+      "accessCount": 16,
+      "lastAccessed": 1779434205614,
       "type": "file"
     },
     {
       "path": "components/sections/marketplace/Marketplace.tsx",
-      "accessCount": 15,
-      "lastAccessed": 1779615341299,
+      "accessCount": 14,
+      "lastAccessed": 1779438710934,
       "type": "file"
     },
     {
       "path": "components/sections/create/CreatorStudio.tsx",
       "accessCount": 12,
-      "lastAccessed": 1779615344078,
+      "lastAccessed": 1779703343335,
+      "type": "file"
+    },
+    {
+      "path": "components/layouts/AppShell.tsx",
+      "accessCount": 8,
+      "lastAccessed": 1779703443381,
       "type": "file"
     },
     {
@@ -210,27 +206,33 @@
       "type": "file"
     },
     {
-      "path": "components/layouts/AppShell.tsx",
+      "path": "app/page.tsx",
       "accessCount": 6,
-      "lastAccessed": 1779438485529,
+      "lastAccessed": 1779703304929,
+      "type": "file"
+    },
+    {
+      "path": "utils/supabase/proxy.ts",
+      "accessCount": 6,
+      "lastAccessed": 1779704568239,
       "type": "file"
     },
     {
       "path": "lib/types.ts",
-      "accessCount": 6,
-      "lastAccessed": 1779615351358,
+      "accessCount": 5,
+      "lastAccessed": 1779703286079,
+      "type": "file"
+    },
+    {
+      "path": "app/layout.tsx",
+      "accessCount": 5,
+      "lastAccessed": 1779704374408,
       "type": "file"
     },
     {
       "path": "components/sections/chat/ChatPanel.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1779615350695,
-      "type": "file"
-    },
-    {
-      "path": "app/page.tsx",
       "accessCount": 4,
-      "lastAccessed": 1779436355432,
+      "lastAccessed": 1779436344537,
       "type": "file"
     },
     {
@@ -240,9 +242,21 @@
       "type": "file"
     },
     {
-      "path": "components/sections/itinerary/ItineraryTimeline.tsx",
+      "path": "app/(public)/marketplace/page.tsx",
       "accessCount": 4,
-      "lastAccessed": 1779615344169,
+      "lastAccessed": 1779703354858,
+      "type": "file"
+    },
+    {
+      "path": "app/(public)/layout.tsx",
+      "accessCount": 4,
+      "lastAccessed": 1779703455336,
+      "type": "file"
+    },
+    {
+      "path": "components/sections/itinerary/ItineraryTimeline.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779436100895,
       "type": "file"
     },
     {
@@ -252,21 +266,39 @@
       "type": "file"
     },
     {
+      "path": "app/(dashboard)/dashboard/create/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779703277680,
+      "type": "file"
+    },
+    {
+      "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779703277907,
+      "type": "file"
+    },
+    {
       "path": "app/(dashboard)/dashboard/itinerary/page.tsx",
       "accessCount": 3,
-      "lastAccessed": 1779674955360,
+      "lastAccessed": 1779703278043,
       "type": "file"
     },
     {
-      "path": "app/layout.tsx",
-      "accessCount": 2,
-      "lastAccessed": 1779271130882,
+      "path": "app/(dashboard)/layout.tsx",
+      "accessCount": 3,
+      "lastAccessed": 1779703352025,
       "type": "file"
     },
     {
-      "path": "utils/supabase/proxy.ts",
-      "accessCount": 2,
-      "lastAccessed": 1779337839741,
+      "path": "proxy.ts",
+      "accessCount": 3,
+      "lastAccessed": 1779703444775,
+      "type": "file"
+    },
+    {
+      "path": "utils/supabase/server.ts",
+      "accessCount": 3,
+      "lastAccessed": 1779704237862,
       "type": "file"
     },
     {
@@ -294,27 +326,21 @@
       "type": "file"
     },
     {
-      "path": "app/(public)/marketplace/page.tsx",
+      "path": "app/api/chat/route.ts",
       "accessCount": 2,
-      "lastAccessed": 1779436355636,
+      "lastAccessed": 1779703284546,
       "type": "file"
     },
     {
-      "path": "app/(dashboard)/dashboard/my-plans/page.tsx",
+      "path": "utils/supabase/client.ts",
       "accessCount": 2,
-      "lastAccessed": 1779436355877,
+      "lastAccessed": 1779703308074,
       "type": "file"
     },
     {
-      "path": "app/(dashboard)/dashboard/create/page.tsx",
+      "path": "components/creator-studio.tsx",
       "accessCount": 2,
-      "lastAccessed": 1779436356266,
-      "type": "file"
-    },
-    {
-      "path": "types/database.types.ts",
-      "accessCount": 2,
-      "lastAccessed": 1779608689093,
+      "lastAccessed": 1779703342816,
       "type": "file"
     },
     {
@@ -396,12 +422,6 @@
       "type": "file"
     },
     {
-      "path": "components/creator-studio.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779270701035,
-      "type": "file"
-    },
-    {
       "path": "components/chat-panel.tsx",
       "accessCount": 1,
       "lastAccessed": 1779270701488,
@@ -420,24 +440,6 @@
       "type": "file"
     },
     {
-      "path": "app/(public)/layout.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271279015,
-      "type": "file"
-    },
-    {
-      "path": "app/(dashboard)/layout.tsx",
-      "accessCount": 1,
-      "lastAccessed": 1779271279310,
-      "type": "file"
-    },
-    {
-      "path": "proxy.ts",
-      "accessCount": 1,
-      "lastAccessed": 1779337255143,
-      "type": "file"
-    },
-    {
       "path": "pnpm-workspace.yaml",
       "accessCount": 1,
       "lastAccessed": 1779337320783,
@@ -447,12 +449,6 @@
       "path": "middleware.ts",
       "accessCount": 1,
       "lastAccessed": 1779337815724,
-      "type": "file"
-    },
-    {
-      "path": "app/api/chat/route.ts",
-      "accessCount": 1,
-      "lastAccessed": 1779345653494,
       "type": "file"
     },
     {
@@ -474,15 +470,9 @@
       "type": "file"
     },
     {
-      "path": "AI_plans/db-function-split-plan.md",
+      "path": "utils/supabase/admin.ts",
       "accessCount": 1,
-      "lastAccessed": 1779593179425,
-      "type": "file"
-    },
-    {
-      "path": "utils/supabase/server.ts",
-      "accessCount": 1,
-      "lastAccessed": 1779608199652,
+      "lastAccessed": 1779703271083,
       "type": "file"
     }
   ],
