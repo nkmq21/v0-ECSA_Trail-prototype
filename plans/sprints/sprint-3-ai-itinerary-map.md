@@ -212,8 +212,8 @@ export async function POST(req: NextRequest) {
 
 **`src/services/chat/createSession.ts`**, **`addMessage.ts`**, **`getSession.ts`**, **`getSessions.ts`**:
 ```ts
-// createSession: insert chat_session, tag usr_${userId}_msg
-// addMessage: insert chat_message (role, content, tool_name, tool_input, tool_output)
+// createSession: insert chat_session, call updateTag(`usr_${userId}_msg`)
+// addMessage: insert chat_message (role, content, tool_name, tool_input, tool_output), call updateTag(`usr_${userId}_msg`)
 // getSession: fetch session + messages, cached usr_${userId}_msg
 ```
 
@@ -221,6 +221,7 @@ export async function POST(req: NextRequest) {
 ```ts
 // Called when renderItinerary tool fires during AI stream
 // Creates purchased_plan (if not exists) + stop rows from AI output
+// Call updateTag(`usr_${userId}_pln`) after insert
 // Returns purchasedPlanId to redirect user to /dashboard/itinerary/[id]
 ```
 

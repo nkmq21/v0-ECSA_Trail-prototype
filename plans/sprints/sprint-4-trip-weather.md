@@ -35,12 +35,12 @@ export const SetActivePlanSchema = z.object({
 // Insert trip row (status='active', active_plan='a')
 // Enforce unique constraint: only 1 active trip per user
 // Optionally save push_subscription on trip row
-// Cache: revalidateTag(`usr_${userId}_trp`)
+// Invalidation: updateTag(`usr_${userId}_trp`)  // Server Action — use updateTag
 ```
 
 **`src/services/trip/completeTrip.ts`** — update `status='completed'`, `end_date=today`.
 
-**`src/services/trip/setActivePlan.ts`** — update `trip.active_plan` (a↔b). Revalidate `usr_${userId}_trp`.
+**`src/services/trip/setActivePlan.ts`** — update `trip.active_plan` (a↔b). Call `updateTag(\`usr_${userId}_trp\`)` (Server Action).
 
 **`src/services/trip/getActiveTrip.ts`**:
 ```ts
@@ -54,7 +54,7 @@ export const SetActivePlanSchema = z.object({
 // Update weather_alert.user_decision = 'accepted' | 'rejected'
 // If accepted: call setActivePlan('b'), persist Plan B stops to stop table (alert_id set)
 // If rejected: no-op
-// Revalidate: usr_${userId}_trp, usr_${userId}_pln
+// Invalidate: updateTag(`usr_${userId}_trp`), updateTag(`usr_${userId}_pln`)  // Server Action
 ```
 
 ### Day 1–2: Plan B stop persistence

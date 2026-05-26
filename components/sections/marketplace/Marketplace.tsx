@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   Search, Star, ShoppingCart, CheckCircle, MapPin, Clock, Users, Zap,
   TrendingUp, Shield, ChevronRight, X, BadgeCheck, AlertCircle, Building2,
-  SlidersHorizontal, ArrowUpDown, Package, ExternalLink, Wallet, Plus
+  SlidersHorizontal, ArrowUpDown, Package, ExternalLink
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -17,7 +17,6 @@ import { useLanguage } from '@/components/ui/LanguageContext'
 import { MOCK_PLANS, MOCK_REVIEWS, AI_SERVICE_TIERS } from '@/lib/mock-data'
 import type { TravelPlan, AiServiceTier } from '@/lib/types'
 import { AiServiceModal } from '@/components/sections/marketplace/AiServiceModal'
-import { useUser } from '@/components/ui/UserContext'
 
 type SortKey = 'featured' | 'top-rated' | 'best-selling' | 'newest' | 'price-low'
 type CategoryFilter = 'all' | 'cultural' | 'nature' | 'adventure' | 'food' | 'city' | 'beach'
@@ -410,8 +409,6 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<CategoryFilter>('all')
   const [sort, setSort] = useState<SortKey>('featured')
-  const { ownedPlanIds, purchasePlan, walletBalance, topUpWallet } = useUser()
-  const [insufficientFor, setInsufficientFor] = useState<TravelPlan | null>(null)
   const [selectedPlan, setSelectedPlan] = useState<TravelPlan | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
   const [buyingPlan, setBuyingPlan] = useState<TravelPlan | null>(null)
@@ -465,20 +462,12 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
   }, [search, category, sort])
 
   function handleBuy(plan: TravelPlan) {
-    if (walletBalance < plan.price) {
-      setInsufficientFor(plan)
-      setDetailOpen(false)
-      return
-    }
     setBuyingPlan(plan)
     setDetailOpen(false)
     setAiModalOpen(true)
   }
 
-  function handleAiComplete(tier: AiServiceTier | null) {
-    if (buyingPlan) {
-      purchasePlan(buyingPlan.id, buyingPlan.price + (tier?.price ?? 0))
-    }
+  function handleAiComplete(_tier: AiServiceTier | null) {
     setAiModalOpen(false)
     setBuyingPlan(null)
   }
@@ -498,11 +487,6 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
                 <TrendingUp className="w-3.5 h-3.5 text-primary" />
                 <span className="font-medium">{MOCK_PLANS.reduce((a, p) => a + p.purchaseCount, 0).toLocaleString()}</span>
                 <span>plans sold this month</span>
-              </div>
-              <div className="flex items-center gap-1.5 bg-green-50 text-green-700 border border-green-200 rounded-lg px-3 py-2 text-xs font-medium">
-                <Wallet className="w-3.5 h-3.5" />
-                <span>${walletBalance.toFixed(2)}</span>
-                <span className="text-green-500 hidden sm:inline">credits</span>
               </div>
             </div>
           </div>
@@ -589,7 +573,7 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
                   <PlanCard
                     key={plan.id}
                     plan={plan}
-                    owned={ownedPlanIds.has(plan.id)}
+                    owned={false}
                     onBuy={handleBuy}
                     onOpenDetail={p => { setSelectedPlan(p); setDetailOpen(true) }}
                   />
@@ -611,7 +595,7 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
         plan={selectedPlan}
         open={detailOpen}
         onClose={() => { setDetailOpen(false); setSelectedPlan(null) }}
-        owned={selectedPlan ? ownedPlanIds.has(selectedPlan.id) : false}
+        owned={false}
         onBuy={handleBuy}
         onOpenInPlanner={(plan) => { onOpenInPlanner?.(plan); setDetailOpen(false) }}
       />
@@ -624,65 +608,6 @@ export function Marketplace({ onOpenInPlanner }: MarketplaceProps) {
         onClose={() => { setAiModalOpen(false); setBuyingPlan(null) }}
       />
 
-      {/* Insufficient funds dialog */}
-      <Dialog open={!!insufficientFor} onOpenChange={v => !v && setInsufficientFor(null)}>
-        <DialogContent showCloseButton={false} className="max-w-sm p-0 gap-0 overflow-hidden">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b border-border">
-            <div className="flex items-start justify-between gap-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
-                <Wallet className="w-5 h-5 text-amber-600" />
-              </div>
-              <DialogClose asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full flex-shrink-0 -mt-1 -mr-1">
-                  <X className="w-4 h-4" />
-                </Button>
-              </DialogClose>
-            </div>
-            <DialogTitle className="text-base font-bold mt-3">Not enough credits</DialogTitle>
-            <DialogDescription className="text-xs text-muted-foreground mt-1">
-              {insufficientFor && (
-                <>
-                  <span className="font-medium text-foreground">{insufficientFor.title}</span> costs{' '}
-                  <span className="font-semibold text-foreground">${insufficientFor.price.toFixed(2)}</span>.
-                  Your balance is <span className="font-semibold text-foreground">${walletBalance.toFixed(2)}</span>.
-                  Top up to continue.
-                </>
-              )}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="px-6 py-5 space-y-3">
-            <p className="text-xs text-muted-foreground">Add credits to your wallet:</p>
-            <div className="flex gap-2">
-              {[10, 20, 50].map(amt => (
-                <button
-                  key={amt}
-                  onClick={() => topUpWallet(amt)}
-                  className="flex-1 flex items-center justify-center gap-1 text-xs font-semibold py-2 bg-green-50 border border-green-200 rounded-lg text-green-700 hover:bg-green-100 transition-colors"
-                >
-                  <Plus className="w-3 h-3" />${amt}
-                </button>
-              ))}
-            </div>
-            <Button
-              className="w-full rounded-lg"
-              size="sm"
-              disabled={insufficientFor ? walletBalance < insufficientFor.price : true}
-              onClick={() => {
-                if (insufficientFor) {
-                  const plan = insufficientFor
-                  setInsufficientFor(null)
-                  setBuyingPlan(plan)
-                  setAiModalOpen(true)
-                }
-              }}
-            >
-              {insufficientFor && walletBalance >= insufficientFor.price
-                ? `Buy for $${insufficientFor.price.toFixed(2)}`
-                : `Need $${insufficientFor ? (insufficientFor.price - walletBalance).toFixed(2) : '0'} more`}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }

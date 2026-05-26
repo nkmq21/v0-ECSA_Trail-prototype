@@ -49,7 +49,7 @@ export async function updateSession(request: NextRequest) {
 
     // Public routes that don't require authentication
     // Use exact match for root and startsWith for paths that have sub-routes
-    const publicRoutes = ['/auth', '/api', '/marketplace', '/callback'];
+    const publicRoutes = ['/auth', '/api', '/callback'];
     const publicExactRoutes = ['/', '/login', '/signup'];
 
     const isPublicRoute =
