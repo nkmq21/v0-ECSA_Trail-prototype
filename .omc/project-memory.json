@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1779696212811,
+  "lastScanned": 1779809075748,
   "projectRoot": "/Users/duynd/WebstormProjects/v0-ECSA_Trail-prototype",
   "techStack": {
     "languages": [
@@ -79,7 +79,7 @@
       "path": "app",
       "purpose": "Application code",
       "fileCount": 3,
-      "lastAccessed": 1779696212795,
+      "lastAccessed": 1779809075714,
       "keyFiles": [
         "globals.css",
         "layout.tsx",
@@ -90,7 +90,7 @@
       "path": "components",
       "purpose": "UI components",
       "fileCount": 13,
-      "lastAccessed": 1779696212795,
+      "lastAccessed": 1779809075715,
       "keyFiles": [
         "ai-service-modal.tsx",
         "creator-studio.tsx",
@@ -103,7 +103,7 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 2,
-      "lastAccessed": 1779696212797,
+      "lastAccessed": 1779809075722,
       "keyFiles": [
         "use-mobile.ts",
         "use-toast.ts"
@@ -112,20 +112,32 @@
     "lib": {
       "path": "lib",
       "purpose": "Library code",
-      "fileCount": 4,
-      "lastAccessed": 1779696212798,
+      "fileCount": 5,
+      "lastAccessed": 1779809075725,
       "keyFiles": [
+        "errors.ts",
         "mock-data.ts",
         "translations.ts",
         "types.ts",
         "utils.ts"
       ]
     },
+    "plans": {
+      "path": "plans",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1779809075726,
+      "keyFiles": [
+        "authentication-plan.md",
+        "db-function-split-plan.md",
+        "gamification-schema-plan.md"
+      ]
+    },
     "public": {
       "path": "public",
       "purpose": "Public files",
       "fileCount": 10,
-      "lastAccessed": 1779696212798,
+      "lastAccessed": 1779809075728,
       "keyFiles": [
         "apple-icon.png",
         "icon-dark-32x32.png",
@@ -134,11 +146,18 @@
         "manifest.json"
       ]
     },
+    "services": {
+      "path": "services",
+      "purpose": "Business logic services",
+      "fileCount": 0,
+      "lastAccessed": 1779809075729,
+      "keyFiles": []
+    },
     "styles": {
       "path": "styles",
       "purpose": null,
       "fileCount": 1,
-      "lastAccessed": 1779696212798,
+      "lastAccessed": 1779809075729,
       "keyFiles": [
         "globals.css"
       ]
@@ -147,30 +166,43 @@
       "path": "supabase",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1779696212798,
+      "lastAccessed": 1779809075730,
       "keyFiles": []
+    },
+    "types": {
+      "path": "types",
+      "purpose": "Type definitions",
+      "fileCount": 1,
+      "lastAccessed": 1779809075730,
+      "keyFiles": [
+        "database.types.ts"
+      ]
     },
     "utils": {
       "path": "utils",
       "purpose": "Utility functions",
-      "fileCount": 0,
-      "lastAccessed": 1779696212798,
-      "keyFiles": []
+      "fileCount": 1,
+      "lastAccessed": 1779809075731,
+      "keyFiles": [
+        "actionWrapper.ts"
+      ]
     },
     "app/api": {
       "path": "app/api",
       "purpose": "API routes",
       "fileCount": 0,
-      "lastAccessed": 1779696212798,
+      "lastAccessed": 1779809075732,
       "keyFiles": []
     },
     "supabase/migrations": {
       "path": "supabase/migrations",
       "purpose": "Database migrations",
-      "fileCount": 1,
-      "lastAccessed": 1779696212798,
+      "fileCount": 4,
+      "lastAccessed": 1779809075737,
       "keyFiles": [
-        "20260521000000_initial_schema.sql"
+        "20260521000000_initial_schema.sql",
+        "20260523000000_gamification_schema.sql",
+        "20260524000000_drop_business_logic_triggers.sql"
       ]
     }
   },
@@ -224,6 +256,12 @@
       "type": "file"
     },
     {
+      "path": "components/ui/UserContext.tsx",
+      "accessCount": 6,
+      "lastAccessed": 1779809558959,
+      "type": "file"
+    },
+    {
       "path": "lib/types.ts",
       "accessCount": 5,
       "lastAccessed": 1779703286079,
@@ -233,12 +271,6 @@
       "path": "app/layout.tsx",
       "accessCount": 5,
       "lastAccessed": 1779704374408,
-      "type": "file"
-    },
-    {
-      "path": "components/ui/UserContext.tsx",
-      "accessCount": 5,
-      "lastAccessed": 1779769312434,
       "type": "file"
     },
     {

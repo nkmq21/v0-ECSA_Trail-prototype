@@ -11,4 +11,6 @@ node_modules/
 .env
 
 # OMC
-.omc*
+.omc
+
+.claude

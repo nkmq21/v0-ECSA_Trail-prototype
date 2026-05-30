@@ -1,5 +1,5 @@
 {
-  "lastSentAt": "2026-05-26T06:10:42.481Z",
-  "repoSignature": "{\"repo\":\"nkmq21/v0-ECSA_Trail-prototype\",\"headSha\":\"0f59fc2bc03e5456541f239c1769b2817d84ae84\",\"dirty\":true,\"openPrNumbers\":[],\"openIssueNumbers\":[],\"failingRunIds\":[]}",
-  "backlogZero": true
+  "lastSentAt": "2026-05-27T02:16:16.013Z",
+  "repoSignature": "{\"repo\":\"nkmq21/v0-ECSA_Trail-prototype\",\"headSha\":\"ef5e433ae1a846556e48c244b2f3523a4f10454e\",\"dirty\":true,\"openPrNumbers\":[4],\"openIssueNumbers\":[],\"failingRunIds\":[]}",
+  "backlogZero": false
 }
