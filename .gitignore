@@ -9,3 +9,8 @@ node_modules/
 .env*.local
 .DS_Store
 .env
+
+# OMC
+.omc
+
+.claude

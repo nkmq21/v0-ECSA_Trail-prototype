@@ -61,7 +61,7 @@ export const createPlan = withServerAction(CreatePlanSchema, async (params, { us
   const supabase = await createClient()
   const { data, error } = await supabase.from('plan').insert({ ...params, creator_id: userId }).select().single()
   if (error) throw error
-  revalidateTag(`usr_${userId}_pln`)
+  updateTag(`usr_${userId}_pln`)  // Next.js 16: use updateTag in Server Actions for immediate invalidation
   return { data, code: AppSuccessCodes.CREATED, type: 'success' as const }
 })
 ```
@@ -99,7 +99,7 @@ async function fetchPlans(userId: string | null, opts: ...) {
 ```
 
 **`src/services/plan/updatePlanStatus.ts`** — already exists, verify it:
-- On publish: `revalidateTag(`usr_${userId}_pln`)`, `revalidateTag('_mkt')`
+- On publish: `updateTag(\`usr_${userId}_pln\`)` (Server Action mutation), `revalidateTag('_mkt', 'max')` (global cache)
 - Check `profile.total_plans` increments
 
 **`src/services/plan/getMyPlans.ts`**:
@@ -128,7 +128,7 @@ export const ReorderStopsSchema = z.object({ planId: z.string().uuid(), orderedS
 
 **`src/services/stop/addStop.ts`**, **`updateStop.ts`**, **`deleteStop.ts`**, **`reorderStops.ts`**:
 - All validate creator_id = userId before mutating
-- All `revalidateTag(`usr_${userId}_pln`)` after mutation
+- All `updateTag(\`usr_${userId}_pln\`)` after mutation (Server Action pattern)
 
 **`src/services/place/getPlaces.ts`**:
 ```ts
@@ -141,7 +141,7 @@ export const ReorderStopsSchema = z.object({ planId: z.string().uuid(), orderedS
 
 **`src/services/plan/purchasePlan.ts`** — already exists, verify:
 - Check: `revalidateTag` uses correct signatures (no extra args beyond tag name)
-- Fix `revalidateTag(`usr_${userId}_pln`, 'minutes')` → `revalidateTag(`usr_${userId}_pln`)` (Next.js `revalidateTag` takes one arg)
+- Fix `revalidateTag(\`usr_${userId}_pln\`, 'minutes')` → `updateTag(\`usr_${userId}_pln\`)` (Next.js 16: `updateTag` in Server Actions for mutation-driven invalidation; old 2-arg `revalidateTag` form is deprecated)
 
 **`src/services/review/submitReview.ts`** — verify exists + calls `recalculate_plan_rating` RPC.
 

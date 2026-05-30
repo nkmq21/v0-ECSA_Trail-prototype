@@ -21,7 +21,14 @@ types/        → src/types/
 hooks/        → src/hooks/
 ```
 - Update `tsconfig.json`: `"paths": { "@/*": ["./src/*"] }`
-- Update `next.config.ts` if needed
+- Update `next.config.ts` — add `cacheComponents: true` (Next.js 16: enables stable `'use cache'`, `cacheLife`, `cacheTag`, and PPR; replaces the old `experimental.ppr` / `experimental.dynamicIO` flags):
+```ts
+import type { NextConfig } from 'next'
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+export default nextConfig
+```
 - Move root `database.types.ts` → `src/types/database.types.ts`
 - Update all `@/` imports (use IDE rename or `find/sed`)
 - Update `package.json` scripts paths if any reference `./utils` or `./lib` directly
@@ -43,40 +50,54 @@ VAPID_PRIVATE_KEY=
 ```
 Set up all available keys in `.env.local` (Supabase is minimum for Sprint 1).
 
-### Day 2–3: Supabase Auth — login/signup pages
+### Day 2–3: Supabase Auth — migrate auth pages to Mantine
 
-**Files to create:**
+**Auth pages already exist** on the `authentication` branch at `app/(auth)/`. During the `src/` restructure, move them to `src/app/(public)/(auth)/` to match the intended architecture (auth is a public sub-group).
+
+**Files to migrate** (shadcn/lucide/react-hook-form/sonner → Mantine):
 ```
-src/app/(public)/(auth)/login/page.tsx
-src/app/(public)/(auth)/login/LoginForm.tsx
-src/app/(public)/(auth)/signup/page.tsx
-src/app/(public)/(auth)/signup/SignupForm.tsx
-src/app/(public)/(auth)/callback/route.ts        ← OAuth redirect handler
-src/app/api/auth/signout/route.ts
+app/(auth)/login/LoginForm.tsx   → src/app/(public)/(auth)/login/LoginForm.tsx  ← migrate UI
+app/(auth)/signup/SignupForm.tsx → src/app/(public)/(auth)/signup/SignupForm.tsx ← migrate UI
+app/(auth)/login/page.tsx        → src/app/(public)/(auth)/login/page.tsx        ← keep as-is
+app/(auth)/signup/page.tsx       → src/app/(public)/(auth)/signup/page.tsx       ← keep as-is
+app/(auth)/callback/route.ts     → src/app/(public)/(auth)/callback/route.ts     ← keep as-is
+app/(auth)/layout.tsx            → src/app/(public)/(auth)/layout.tsx            ← keep as-is
+app/api/auth/signout/route.ts    → src/app/api/auth/signout/route.ts             ← keep as-is
 ```
 
-**LoginForm.tsx** — Mantine `TextInput`, `PasswordInput`, `Button` (use Mantine, NOT shadcn):
-- Email + password sign-in via `supabase.auth.signInWithPassword()`
-- Google OAuth button → `supabase.auth.signInWithOAuth({ provider: 'google', redirectTo: callback })`
-- Error display via `showNotificationFromAssertion` (or inline Mantine `Alert`)
+**LoginForm.tsx** — replace shadcn stack with Mantine:
+- `useForm` from `@mantine/form` with `zodResolver` from `mantine-form-zod-resolver` (not `react-hook-form`)
+- `TextInput`, `PasswordInput`, `Button` from `@mantine/core`
+- `notifications.show(...)` from `@mantine/notifications` (not `sonner`)
+- `MapPinIcon`, `EyeIcon`, `EyeSlashIcon` from `@phosphor-icons/react` (not `lucide-react`)
+- Remove `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormMessage` (all shadcn)
 - Redirect to `/dashboard/chat` on success
 
-**SignupForm.tsx**:
-- Email + password + full name
-- `supabase.auth.signUp()` → profile row auto-created by `handle_new_user` trigger
-- Post-signup → email confirmation notice (Mantine `Alert` info)
+**SignupForm.tsx** — same stack swap:
+- `useForm` from `@mantine/form`
+- `TextInput`, `PasswordInput`, `Button` from `@mantine/core`
+- Post-signup confirmation: Mantine `Alert` variant `light` color `blue` (not toast)
+- `supabase.auth.signUp()` and Google OAuth logic unchanged
 
-**OAuth callback** (`src/app/(public)/(auth)/callback/route.ts`):
+**Proxy** (`src/proxy.ts`) — Next.js 16 renamed `middleware.ts` → `proxy.ts` with export renamed to `proxy`:
 ```ts
-// Standard Supabase PKCE callback
-import { createClient } from '@/utils/supabase/server'
-// exchange code → session, redirect to /dashboard/chat
-```
+import { updateSession } from '@/utils/supabase/proxy'
+import type { NextRequest } from 'next/server'
 
-**Middleware** (`src/middleware.ts`):
-- Protect all `/dashboard/**` routes — redirect to `/login` if no session
-- Public: `/`, `/marketplace`, `/plan/[id]`, `/login`, `/signup`, `/api/auth/**`
-- Use `updateSession()` from `src/utils/supabase/server.ts` (Supabase middleware pattern)
+export async function proxy(request: NextRequest) {
+  return updateSession(request)
+}
+
+export const config = {
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:png|svg|ico)$).*)'],
+}
+```
+Note: `utils/supabase/proxy.ts` (the `updateSession` helper with route-protection logic) already exists and is correct — only the root entry point `src/proxy.ts` needs to be created.
+
+**Install** `mantine-form-zod-resolver` for Mantine form Zod integration:
+```bash
+pnpm add mantine-form-zod-resolver
+```
 
 ### Day 3–4: actionWrapper + errors + GenericResponse (already partially exists — verify + complete)
 
@@ -128,7 +149,7 @@ export default function Home() { redirect('/marketplace') }
 ```bash
 pnpm add @mantine/core @mantine/hooks @mantine/notifications @mantine/form @mantine/dates @mantine/carousel @mantine/charts
 pnpm add @phosphor-icons/react framer-motion
-pnpm add @mantine/core/styles.css  # PostCSS setup
+pnpm add postcss-preset-mantine postcss-simple-vars  # PostCSS plugins for Mantine
 ```
 
 **Remove:**
@@ -180,9 +201,15 @@ export { NavigationProgress, startNavigationProgress }
 **`src/components/ui/ResponsiveLink.tsx`** — wrapper around Next `Link` with Mantine:
 ```tsx
 // Polymorphic: can be used as component prop on Mantine components
-export const ResponsiveLink = forwardRef<HTMLAnchorElement, ...>(({ href, children, ...props }, ref) => (
-  <Link href={href} ref={ref} {...props}>{children}</Link>
-))
+// Note: forwardRef is deprecated in React 19 — pass ref as a regular prop
+export function ResponsiveLink({ href, ref, children, ...props }: {
+  href: string
+  ref?: React.Ref<HTMLAnchorElement>
+  children: React.ReactNode
+  [key: string]: unknown
+}) {
+  return <Link href={href} ref={ref} {...props}>{children}</Link>
+}
 ```
 
 ### Day 3–4: Shared UI primitives (Mantine wrappers/helpers)

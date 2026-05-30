@@ -6,6 +6,8 @@ File guide Claude Code (claude.ai/code) for work in repo.
 
 **ECSATrail** = AI-driven travel planner PWA (Vietnam-first). Platform connects **Plan Creators** (experienced travelers who author itineraries) with **Plan Consumers** (browse, own, customize plans), plus a lightweight **Business/Affiliate API** surface. Monetization is **AI premium subscription only** (per-plan or monthly) — creator plans are free to consumers, **no platform fee** on creator listings. Next.js 16 App Router, React 19, Mantine UI v9, Supabase. Server-side sessions, `GenericResponse` pattern, React Compiler opt, PPR (Partial Pre-Rendering), offline-first via Service Worker.
 
+## THIS PROJECT'S NEXT.JS VERSION IS NOT THE ONE YOU ARE FAMILIAR WITH, HAVE A SEARCH TO CONFIRM THE NEWEST CHANGES
+
 ## Commands
 
 ```bash

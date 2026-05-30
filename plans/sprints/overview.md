@@ -30,6 +30,13 @@
 - **PPR pattern** — every dashboard route = page.tsx → Shell.tsx → TableWrapper.tsx → Table.tsx.
 - **Split-function caching** — public (not cached) → cached path → shared fetcher.
 
+### Next.js 16 specifics
+- **`proxy.ts` (not `middleware.ts`)** — Next.js 16 renamed middleware. Root entry is `src/proxy.ts` with `export async function proxy(...)`. The `utils/supabase/proxy.ts` helper already exists; only the root file needs creating. Auth pages already exist on `authentication` branch — Sprint 1 task is migrate UI to Mantine, not create from scratch.
+- **`cacheComponents: true`** in `next.config.ts` — replaces `experimental.ppr`, `experimental.dynamicIO`, `experimental.useCache`. Enables stable `'use cache'`, `cacheLife`, `cacheTag`.
+- **`updateTag(tag)`** for all Server Action mutations (user sees change immediately). **`revalidateTag(tag, 'max')`** for Route Handler / webhook / background invalidations. Single-arg `revalidateTag(tag)` is deprecated — TypeScript error in v16.
+- **`cacheLife` / `cacheTag`** — stable, no `unstable_` prefix needed.
+- **Turbopack is default** — no `--turbopack` flag needed in `pnpm dev`. `next lint` removed from `next` binary — `pnpm lint` calls ESLint directly (already set in `package.json`).
+
 ---
 
 ## Dependency Map

@@ -102,7 +102,7 @@ export async function POST(req: NextRequest) {
     // 1. Find ai_subscription by payment_service_subscription_id = event.order_id
     // 2. Update status='active', current_period_end = now + 30 days (monthly) or null (per-plan)
     // 3. If per-plan: update purchased_plan.ai_tier for the planId stored in description
-    // 4. revalidateTag on the user's subscription cache
+    // 4. revalidateTag(`usr_${userId}_aip`, 'max')  // Route Handler webhook — use revalidateTag with 'max', not updateTag
   }
 
   return NextResponse.json({ received: true })
@@ -136,7 +136,7 @@ export const CancelRedemptionSchema = z.object({
 // 2. Update challenge_instance: status='completed', completed_at=now()
 // 3. Insert reward_ledger row (exp_delta, points_delta, reason='challenge_completed')
 //    → DB trigger apply_reward_ledger handles user_progress update + badge recalc
-// 4. revalidateTag(`usr_${userId}_pln`)
+// 4. updateTag(`usr_${userId}_pln`)  // Server Action — use updateTag
 // Return: { newLevel, newBadge, expEarned, pointsEarned }
 ```
 
